@@ -6,6 +6,8 @@ module.exports =
     'bBer.books',
     'diDocuments.export',
     'diDocuments.controllers',
+    'bBer.modals.metadata',
+    'bBer.modals.delete'
   ])
   .controller('Books', function($scope, $timeout, $rootScope, $modal, userService, booksService, debounce) {
 
@@ -15,7 +17,8 @@ module.exports =
     import:     true,
     save:       true,
     linkUnlink: true,
-    document:   false
+    book:       true,
+    document:   false,
   };
 
   $scope.profile        = userService.profile;
@@ -23,6 +26,7 @@ module.exports =
   $scope.createBook     = createBook;
   $scope.removeBook     = removeBook;
   $scope.selectBook     = selectBook;
+  $scope.editBookMetadata   = editBookMetadata;
 
   $rootScope.books = booksService.getItems();
 
@@ -53,15 +57,27 @@ module.exports =
   function removeBook(item) {
     var modalScope = $rootScope.$new();
     modalScope.item = item;
-    modalScope.wordCount = wordsCountService.count();
-
     $modal.open({
-      template: require('raw!../documents/delete-modal.directive.html'),
+      template: require('raw!./modals/confirm-delete.modal.html'),
       scope: modalScope,
-      controller: 'DeleteDialog',
+      controller: 'ConfirmDelete',
       windowClass: 'modal--dillinger'
     });
   }
+
+
+  function editBookMetadata(item){
+    var modalScope = $rootScope.$new();
+    modalScope.book = item;
+    $modal.open({
+      template: require('raw!./modals/book-metadata.modal.html'),
+      scope: modalScope,
+      controller: 'BookMetadata',
+      windowClass: 'modal--dillinger'
+    });
+  }
+
+
 
   function createBook() {
     var item;

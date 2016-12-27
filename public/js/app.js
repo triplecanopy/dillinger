@@ -48,6 +48,9 @@
   require('./bber/books.service');
   require('./bber/books.controller');
   require('./bber/book-documents.controller');
+  require('./bber/modals/confirm-delete.controller');
+  require('./bber/modals/book-metadata.controller');
+
 
   // Plugin: Github
   require('./plugins/github/github.service');
