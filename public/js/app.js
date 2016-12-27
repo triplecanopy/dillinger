@@ -8,7 +8,7 @@
   // jQuery
   window.jQuery = require('jquery'),
   require('jquery-ui-bundle/jquery-ui.js'),
-  require('inverseresize/alsoResizeReverse/alsoResizeInverse'); 
+  require('inverseresize/alsoResizeReverse/alsoResizeInverse');
 
   // AngularJS
   angular = require('exports?angular!angular');
@@ -40,6 +40,14 @@
   require('./documents/documents.controller');
   require('./documents/delete-modal.controller');
   require('./services/wordscount.service');
+
+  //BBer Stuff
+  require('./bber/base.controller');
+  require('./bber/book.factory');
+  require('./bber/book-documents.factory');
+  require('./bber/books.service');
+  require('./bber/books.controller');
+  require('./bber/book-documents.controller');
 
   // Plugin: Github
   require('./plugins/github/github.service');
@@ -80,7 +88,8 @@
 
   // Configure Dependencies
   angular.module('Dillinger', [
-    'diBase',
+    // 'diBase',
+    'bBer',
     'diDocuments',
     'diNotify',
     'diUser',
@@ -105,7 +114,7 @@
     }, 150, function() {
       return jQuery('.splashscreen').remove()
       // jQuery('#editor1').resizable({
-      //     alsoResizeReverse: '#preview1'          
+      //     alsoResizeReverse: '#preview1'
       // });
     });
   });
