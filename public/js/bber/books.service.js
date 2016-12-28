@@ -334,101 +334,100 @@ module.exports =
 
   }
 
-/**
- *    Upload a file to a cloud service and return a URL.
- *
- *    @param  {File}  file  The file object
- *            (see: https://developer.mozilla.org/en/docs/Web/API/File).
- *
- */
+  /**
+   *    Upload a file to a cloud service and return a URL.
+   *
+   *    @param  {File}  file  The file object
+   *            (see: https://developer.mozilla.org/en/docs/Web/API/File).
+   *
+   */
+  function imageUploader(file) {
 
-function imageUploader(file) {
+    var reader = new FileReader()
+      , name = file.name
+      ;
 
-  var reader = new FileReader()
-    , name = file.name
-    ;
+    reader.onloadend = function() {
 
-  reader.onloadend = function() {
-
-    var di = diNotify({
-      message: 'Uploading Image to Dropbox...',
-      duration: 5000
-    });
-    return $http.post('save/dropbox/image', {
-      image_name: name,
-      fileContents: reader.result
-    }).success(function(result) {
-
-      if (angular.isDefined(di.$scope)) {
-        di.$scope.$close();
-      }
-      if (result.data.error) {
-        return diNotify({
-          message: 'An Error occured: ' + result.data.error,
-          duration: 5000
-        });
-      } else {
-        var public_url = result.data.url
-        // Now take public_url and and wrap in markdown
-        var template = '!['+name+']('+public_url+')'
-        // Now take the ace editor cursor and make the current
-        // value the template
-        service.setCurrentCursorValue(template)
-
-        // Track event in GA
-        // if (window.ga) {
-        //   ga('send', 'event', 'click', 'Upload Image To Dropbox', 'Upload To...')
-        // }
-        return diNotify({
-          message: 'Successfully uploaded image to Dropbox.',
-          duration: 4000
-        });
-      }
-    }).error(function(err) {
-      return diNotify({
-        message: 'An Error occured: ' + err
+      var di = diNotify({
+        message: 'Uploading Image to Dropbox...',
+        duration: 5000
       });
-    });
+      return $http.post('save/dropbox/image', {
+        image_name: name,
+        fileContents: reader.result
+      }).success(function(result) {
 
+        if (angular.isDefined(di.$scope)) {
+          di.$scope.$close();
+        }
+        if (result.data.error) {
+          return diNotify({
+            message: 'An Error occured: ' + result.data.error,
+            duration: 5000
+          });
+        } else {
+          var public_url = result.data.url
+          // Now take public_url and and wrap in markdown
+          var template = '!['+name+']('+public_url+')'
+          // Now take the ace editor cursor and make the current
+          // value the template
+          service.setCurrentCursorValue(template)
+
+          // Track event in GA
+          // if (window.ga) {
+          //   ga('send', 'event', 'click', 'Upload Image To Dropbox', 'Upload To...')
+          // }
+          return diNotify({
+            message: 'Successfully uploaded image to Dropbox.',
+            duration: 4000
+          });
+        }
+      }).error(function(err) {
+        return diNotify({
+          message: 'An Error occured: ' + err
+        });
+      });
+
+    }
+    reader.readAsDataURL(file)
   }
-  reader.readAsDataURL(file)
 
-}
+  /**
+   *    Update the current document SHA.
+   *
+   *    @param  {String}  sha  The document SHA.
+   */
+  function setCurrentBookSHA(sha) {
+    service.currentBook.github.sha = sha;
+    return sha;
+  }
 
-/**
- *    Update the current document SHA.
- *
- *    @param  {String}  sha  The document SHA.
- */
-function setCurrentBookSHA(sha) {
-  service.currentBook.github.sha = sha;
-  return sha;
-}
+  /**
+   *    Get the current document SHA.
+   */
+  function getCurrentBookSHA() {
+    return service.currentBook.github.sha;
+  }
 
-/**
- *    Get the current document SHA.
- */
-function getCurrentBookSHA() {
-  return service.currentBook.github.sha;
-}
 
   function save(manual) {
     if (!angular.isDefined(manual)) {
       manual = false;
     }
-
     if (manual) {
       diNotify('Documents Saved.');
     }
-
-    localStorage.setItem('files', angular.toJson(service.books));
+    console.log('saving all the books');
+    localStorage.setItem('books', angular.toJson(service.books));
     return localStorage.setItem('currentBook', angular.toJson(service.currentBook));
   }
 
   function init() {
     var item, _ref;
-    service.books = angular.fromJson(localStorage.getItem('books')) || [];
-    service.currentBook = angular.fromJson(localStorage.getItem('currentBook')) || {};
+    var _books = angular.fromJson(localStorage.getItem('books')) || [];
+    this.books = _books.map( function(b){ return new Book(b) } )
+    service.currentBook = new Book(angular.fromJson(localStorage.getItem('currentBook')) || {});
     if (!((_ref = service.books) != null ? _ref.length : void 0)) {
       item = this.createItem();
       this.addItem(item);

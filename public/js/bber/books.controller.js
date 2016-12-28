@@ -22,23 +22,23 @@ module.exports =
   };
 
   $scope.profile        = userService.profile;
-  $scope.saveDocument   = save;
+  $scope.saveBook       = saveBook;
   $scope.createBook     = createBook;
   $scope.removeBook     = removeBook;
   $scope.selectBook     = selectBook;
-  $scope.editBookMetadata   = editBookMetadata;
+  $scope.editBookMetadata = editBookMetadata;
 
   $rootScope.books = booksService.getItems();
 
   $rootScope.editor.on('change', debounce(doAutoSave, 2000));
   $rootScope.$on('autosave', doAutoSave);
 
-  function save(manuel) {
+  function saveBook(manual) {
     var book = booksService.getCurrentBook();
-    var item = book.documents.getCurrentDocument();
+    var item = book.getCurrentDocument();
     item.body = $rootScope.editor.getSession().getValue();
     booksService.setCurrentBook(book);
-    return booksService.save(manuel);
+    return booksService.save(manual);
   }
 
   function initBook() {
@@ -89,9 +89,8 @@ module.exports =
 
   function doAutoSave() {
     if ($scope.profile.enableAutoSave) {
-      return save();
+      return saveBook();
     }
-
     return false;
   }
 

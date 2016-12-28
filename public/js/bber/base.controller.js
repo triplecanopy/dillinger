@@ -22,7 +22,7 @@ module.exports =
 .controller('Base', function($scope, $rootScope, userService, booksService) {
   $scope.profile         = userService.profile;
   $rootScope.currentBook = booksService.getCurrentBook();
-  $rootScope.currentDocument = $rootScope.currentBook.documents.getCurrentDocument();
+  $rootScope.currentDocument = $rootScope.currentBook.getCurrentDocument();
   $rootScope.editor      = ace.edit('editor');
 
   $rootScope.editor.getSession().setMode('ace/mode/markdown');
@@ -36,12 +36,13 @@ module.exports =
 
   var updateBook = function() {
     $rootScope.currentBook = booksService.getCurrentBook();
-    $rootScope.documents = $rootScope.currentBook.documents.getItems();
+    console.log($rootScope.currentBook);
+    $rootScope.documents = $rootScope.currentBook.getItems();
     updateDocument();
   };
 
   var updateDocument = function() {
-    $rootScope.currentDocument = booksService.getCurrentBook().documents.getCurrentDocument();
+    $rootScope.currentDocument = booksService.getCurrentBook().getCurrentDocument();
     return $rootScope.editor.getSession().setValue($rootScope.currentDocument.body);
   };
 

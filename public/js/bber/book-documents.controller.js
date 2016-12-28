@@ -23,31 +23,31 @@ module.exports =
     $scope.createDocument = createDocument;
     $scope.removeDocument = removeDocument;
     $scope.selectDocument = selectDocument;
-    $rootScope.documents  = booksService.getCurrentBook().documents.getItems();
+    $rootScope.documents  = booksService.getCurrentBook().getItems();
 
     // $rootScope.editor.on('change', debounce(doAutoSave, 2000));
     // $rootScope.$on('autosave', doAutoSave);
 
     function initDocument() {
       var book = booksService.getCurrentBook();
-      var item = book.documents.getItemById($rootScope.currentDocument.id);
-      book.documents.setCurrentDocument(item);
+      var item = book.getItemById($rootScope.currentDocument.id);
+      book.setCurrentDocument(item);
       return $rootScope.$emit('document.refresh');
     }
 
 
     function save(manuel) {
       var book = booksService.getCurrentBook();
-      var item = book.documents.getCurrentDocument();
+      var item = book.getCurrentDocument();
       item.body = $rootScope.editor.getSession().getValue();
-      book.documents.setCurrentDocument(item);
+      book.setCurrentDocument(item);
       return booksService.save(manuel);
     }
 
     function selectDocument(item) {
       var book = booksService.getCurrentBook();
-      var item = book.documents.getItem(item);
-      book.documents.setCurrentDocument(item);
+      var item = book.getItem(item);
+      book.setCurrentDocument(item);
       return $rootScope.$emit('document.refresh');
     }
 
@@ -66,9 +66,9 @@ module.exports =
 
     function createDocument() {
       var book = booksService.getCurrentBook();
-      var item = book.documents.createItem();
-      book.documents.addItem(item);
-      book.documents.setCurrentDocument(item);
+      var item = book.createItem();
+      book.addItem(item);
+      book.setCurrentDocument(item);
       return $rootScope.$emit('document.refresh');
     }
 

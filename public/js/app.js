@@ -48,7 +48,6 @@
   //BBer Stuff
   require('./bber/base.controller');
   require('./bber/book.factory');
-  require('./bber/book-documents.factory');
   require('./bber/books.service');
   require('./bber/books.controller');
   require('./bber/book-documents.controller');
