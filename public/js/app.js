@@ -10,11 +10,15 @@
   require('jquery-ui-bundle/jquery-ui.js'),
   require('inverseresize/alsoResizeReverse/alsoResizeInverse');
 
+
   // AngularJS
   angular = require('exports?angular!angular');
 
   // Angular Bootstrap UI
   require('angular-bootstrap');
+
+  require('angular-ui-sortable/dist/sortable');
+
 
   // Base
   require('./base/base.controller');

@@ -6,6 +6,7 @@ module.exports =
     'bBer.books',
     'diDocuments.export',
     'diDocuments.controllers',
+    'ui.sortable'
   ])
   .controller('BookDocuments', function($scope, $timeout, $rootScope, $modal, userService, booksService, debounce) {
 
