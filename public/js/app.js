@@ -53,6 +53,8 @@
   require('./bber/book-documents.controller');
   require('./bber/modals/confirm-delete.controller');
   require('./bber/modals/book-metadata.controller');
+  require('./bber/sheet.factory');
+  require('./bber/dropbox.service');
 
 
   // Plugin: Github

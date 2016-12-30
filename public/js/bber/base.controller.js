@@ -17,9 +17,15 @@ module.exports =
     'diBase.directives.previewToggle',
     'diBase.directives.preview',
     'bBer.controllers.books',
-    'bBer.controllers.bookDocuments'
+    'bBer.controllers.bookDocuments',
+    'bBer.dropbox'
   ])
-.controller('Base', function($scope, $rootScope, userService, booksService) {
+.controller('Base', function($scope, $rootScope, userService, booksService, Dropbox) {
+  $rootScope.testDropbox = function(){
+    //Dropbox.listBooks().then(function(resp){console.log(resp);});
+    Dropbox.loadBook()
+  }
+  $rootScope.authenticationUrl = Dropbox.authenticationUrl;
   $scope.profile         = userService.profile;
   $rootScope.currentBook = booksService.getCurrentBook();
   $rootScope.currentDocument = $rootScope.currentBook.getCurrentDocument();

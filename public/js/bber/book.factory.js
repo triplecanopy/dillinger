@@ -1,14 +1,18 @@
 'use strict';
 
+var yaml = require('js-yaml');
+require('lodash');
+
 module.exports = angular
-.module('bBer.book',  ['diDocuments.sheet'])
-.factory('Book', function(Sheet, diNotify) {
+.module('bBer.book',  ['bBer.sheet'])
+.factory('Book', function(BookSheet, diNotify) {
 
   return function(bookData) {
 
     var defaults = {
       id:                      new Date().getTime(),
       title:                  'Book Title',
+      folderName:             'book_title',
       author:                  '',
       files:                   [],
       currentDocument:         {},
@@ -30,6 +34,7 @@ module.exports = angular
       setCurrentDocumentSHA:   setCurrentDocumentSHA,
       getCurrentDocumentSHA:   getCurrentDocumentSHA,
       setCurrentCursorValue:   setCurrentCursorValue,
+      asBberFiles:             asBberFiles
     }
 
     //initialize
@@ -99,7 +104,10 @@ module.exports = angular
      *    @param  {Object}  props  Item properties (`title`, `body`, `id`).
      */
     function createItem(props) {
-      return new Sheet(props);
+      var pad = _.padStart(String(this.size()+1), 4,'0');
+      var title = {title: `section-${pad}.md`};
+      angular.extend
+      return new BookSheet(angular.extend({},props,title));
     }
 
     /**
@@ -219,35 +227,6 @@ module.exports = angular
       return false;
     }
 
-    /**
-     *    Import a md file into dillinger.
-     *
-     *    @param  {File}  file  The file to import
-     *            (see: https://developer.mozilla.org/en/docs/Web/API/File).
-     *
-     */
-    function mdFileReader(file){
-      var reader = new FileReader()
-      reader.onload = function(event) {
-        var text = event.target.result
-        if (isBinaryFile(text)) {
-          return diNotify({
-            message: 'Importing binary files will cause dillinger to become unresponsive',
-            duration: 4000
-          })
-        }
-        // Create a new document.
-        var item = createItem();
-        addItem(item);
-        setCurrentDocument(item);
-        // Set the new documents title and body.
-        setCurrentDocumentTitle(file.name);
-        setCurrentDocumentBody(text);
-        // Refresh the editor and proview.
-        $rootScope.$emit('document.refresh');
-      }
-      reader.readAsText(file);
-    }
 
     /**
      *    Update the current document SHA.
@@ -264,6 +243,39 @@ module.exports = angular
      */
     function getCurrentDocumentSHA() {
       return this.currentDocument.github.sha;
+    }
+
+
+    /**
+    *   return book as list of files organized as a bber project
+    *
+    **/
+    function asBberFiles(){
+      var _files = [];
+      var _meta = [{
+          term: 'creator',
+          value: this.authors,
+          term_property: 'role',
+          term_property_value: 'aut'
+        },{
+          term: 'title',
+          value: this.title,
+          term_property: 'title-type',
+          term_property_value: 'main'
+        }];
+
+      _files.push({
+        path:'metadata.yml',
+        contents: yaml.safeDump(angular.toJson(_meta))
+      });
+
+      angular.forEach(this.files, function(f){
+        _files.push({
+          path: '_book/_markdown/'+f.title,
+          contents: f.body
+        })
+      })
+      return _files;
     }
 
 
