@@ -1,5 +1,5 @@
 <div class="sidebar-wrapper">
-  <div class="sidebar" ng-controller="Documents as document">
+  <div class="sidebar" ng-controller="Books as book">
     <h2 class="sidebar-branding">
       <%- include icons/branding %>
     </h2>
@@ -7,45 +7,36 @@
     <nav class="nav nav-sidebar">
       <ul class="menu menu-sidebar">
 
-        <li class="menu-item menu-item--link-unlink in-sidebar">
-          <a class="menu-link" ng-click="document.status.linkUnlink = !document.status.linkUnlink">
-          <span>Services</span> <span class="caret"></span></a>
+        <!-- Book List -->
+        <!-- <li class="menu-item menu-item--documents in-sidebar">
+          <a class="menu-link" ng-click="book.status.book = !book.status.book">
+          <span>Books</span> <span class="caret"></span></a>
 
-          <ul class="sidebar-list" collapse="document.status.linkUnlink">
-            <%- include dropdowns/link_unlink %>
+          <ul class="books sidebar-list" collapse="book.status.book" role="menu">
+            <%- include dropdowns/books %>
+            <li> <a ng-click="createBook()">New Book</a> </li>
           </ul>
-        </li>
 
-        <li class="menu-item menu-item--save-to in-sidebar">
-          <a class="menu-link" ng-click="document.status.save = !document.status.save">
-          <span>Save to</span> <span class="caret"></span></a>
+        </li> -->
 
-          <ul class="sidebar-list" collapse="document.status.save">
-            <%- include dropdowns/save_to %>
-          </ul>
-        </li>
-        <li class="menu-item menu-item--import-from in-sidebar">
-          <a class="menu-link" ng-click="document.status.import = !document.status.import">
-          <span>Import from</span> <span class="caret"></span></a>
+        <!-- Document List-->
+        <li class="menu-item menu-item--documents in-sidebar" ng-controller='BookDocuments as document'>
+          <a class="menu-link" ng-click="book.status.document = !book.status.document">
+          <span>Book Sections</span> <span class="caret"></span></a>
 
-          <ul class="sidebar-list" collapse="document.status.import">
-            <%- include dropdowns/import_from %>
-          </ul>
-        </li>
-        <li class="menu-item menu-item--documents in-sidebar">
-          <a class="menu-link" ng-click="document.status.document = !document.status.document">
-          <span>Documents</span> <span class="caret"></span></a>
-
-          <ul class="documents sidebar-list" collapse="document.status.document" role="menu">
+          <ul ui-sortable ng-model='documents' class="documents sidebar-list" collapse="book.status.document" role="menu"  >
             <%- include dropdowns/documents %>
+            <li><a ng-click="createDocument()">New Book Section</a></li>
           </ul>
         </li>
+
       </ul>
     </nav>
-    <a class="btn btn--new" ng-click="createDocument()">New Document</a>
-    <a class="btn btn--save" ng-click="saveDocument(true)">Save Session</a>
-    <a class="btn btn--delete"
-       ng-click="removeDocument(currentDocument)"
-       ng-if="documents.length > 1">Delete Document</a>
+
+    <a class="btn btn--save" ng-click="save(currentBook)">Save</a>
+    <a class="btn btn--save" ng-click="bberCommand('build')">bber build</a>
+    <a class="btn btn--save" ng-click="bberCommand('publish')">bber publish</a>
+
+
   </div>
 </div>

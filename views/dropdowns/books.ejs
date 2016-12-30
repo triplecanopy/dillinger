@@ -1,0 +1,11 @@
+<li
+  ng-repeat="book in books track by book.id"
+  ng-class="{
+    'active': currentBook.id === book.id,
+    'octocat': book.isGithubFile
+    }"
+  >
+  <a ng-click="selectBook(book)">{{book.title}}</a>
+  <a ng-click="editBookMetadata(book)">&#x2699;</a>
+  <a ng-click="removeBook(book)">×</a>
+</li>
