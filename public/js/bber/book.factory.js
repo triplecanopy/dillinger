@@ -15,6 +15,7 @@ module.exports = angular
       folderName:             'book_title',
       author:                  '',
       files:                   [],
+      meta:                    {},
       currentDocument:         {},
       getItem:                 getItem,
       getItemByIndex:          getItemByIndex,
@@ -37,11 +38,11 @@ module.exports = angular
       asBberFiles:             asBberFiles
     }
 
-    //initialize
+    //initialize with a single document
     angular.extend(this, defaults);
-    var item = this.createItem();
-    this.addItem(item);
-    this.setCurrentDocument(item);
+    this.addItem( this.createItem() );
+    angular.extend(this, bookData);
+
 
     /**
      *    Get item from the files array.
@@ -149,6 +150,9 @@ module.exports = angular
      *    Get the current document.
      */
     function getCurrentDocument() {
+      if(angular.equals(this.currentDocument, {}) && this.files.length > 0){
+        this.currentDocument = this.files[0]
+      }
       return this.currentDocument;
     }
 
@@ -279,6 +283,5 @@ module.exports = angular
     }
 
 
-    return angular.extend(this, bookData);
   };
 });

@@ -41,12 +41,12 @@ module.exports =
     return booksService.save(manual);
   }
 
-  function initBook() {
-    var item;
-    item = booksService.getItemById($rootScope.currentBook.id);
-    booksService.setCurrentBook(item);
-    return $rootScope.$emit('book.refresh');
-  }
+  // function initBook() {
+  //   var item;
+  //   item = booksService.getItemById($rootScope.currentBook.id);
+  //   booksService.setCurrentBook(item);
+  //   return $rootScope.$emit('book.refresh');
+  // }
 
   function selectBook(item) {
     item = booksService.getItem(item);
@@ -101,6 +101,5 @@ module.exports =
     return false;
   });
 
-  initBook();
 
 });

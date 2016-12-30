@@ -18,33 +18,33 @@ module.exports =
     'diBase.directives.preview',
     'bBer.controllers.books',
     'bBer.controllers.bookDocuments',
-    'bBer.dropbox'
+    'bBer.dropbox',
+    'bBer.localstore'
   ])
-.controller('Base', function($scope, $rootScope, userService, booksService, Dropbox) {
-  $rootScope.testDropbox = function(){
-    //Dropbox.listBooks().then(function(resp){console.log(resp);});
-    Dropbox.loadBook()
-  }
-  $rootScope.authenticationUrl = Dropbox.authenticationUrl;
-  $scope.profile         = userService.profile;
-  $rootScope.currentBook = booksService.getCurrentBook();
-  $rootScope.currentDocument = $rootScope.currentBook.getCurrentDocument();
-  $rootScope.editor      = ace.edit('editor');
+.controller('Base', function($scope, $rootScope, userService, booksService, Local, Book) {
+  $scope.profile  = userService.profile;
+  $rootScope.editor = ace.edit('editor');
+  $rootScope.save = Local.saveBook
+  $rootScope.bberCommand = Local.bberCommand
+
 
   $rootScope.editor.getSession().setMode('ace/mode/markdown');
   $rootScope.editor.setTheme('ace/theme/dillinger');
   $rootScope.editor.getSession().setUseWrapMode(true);
   $rootScope.editor.setShowPrintMargin(false);
-  $rootScope.editor.getSession().setValue($rootScope.currentDocument.body);
   $rootScope.editor.setOption('minLines', 50);
   $rootScope.editor.setOption('maxLines', 90000);
 
 
+  var updateBooks = function(){
+    $rootScope.books = booksService.getItems();
+    return updateBook();
+  }
+
   var updateBook = function() {
     $rootScope.currentBook = booksService.getCurrentBook();
-    console.log($rootScope.currentBook);
     $rootScope.documents = $rootScope.currentBook.getItems();
-    updateDocument();
+    return updateDocument();
   };
 
   var updateDocument = function() {
@@ -52,9 +52,29 @@ module.exports =
     return $rootScope.editor.getSession().setValue($rootScope.currentDocument.body);
   };
 
-  $scope.updateDocument = updateDocument;
+  $scope.updateBooks = updateBooks
   $scope.updateBook = updateBook;
+  $scope.updateDocument = updateDocument;
 
-  $rootScope.$on('document.refresh', updateDocument);
+  $rootScope.$on('books.refresh', updateBooks);
   $rootScope.$on('book.refresh', updateBook);
+  $rootScope.$on('document.refresh', updateDocument);
+
+
+  // initialize a book
+  Local.loadBook().then(function(book){
+    // try to load from local server
+    booksService.addItem(book);
+    booksService.setCurrentBook(book);
+    return $rootScope.$emit('books.refresh');
+  },function(err){
+    // otherwise create a blank one
+    var book = new Book();
+    booksService.addItem(book);
+    booksService.setCurrentBook(book);
+    return $rootScope.$emit('books.refresh');
+  })
+
+
+
 });

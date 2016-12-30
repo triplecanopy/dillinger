@@ -9,7 +9,7 @@ module.exports =
   return function(sheetData) {
 
     angular.extend(this, {
-      id: new Date().getTime(),
+      id: new Date().getTime()+Math.random(1000) ,
       title: 'section.md',
       body: ''
     });

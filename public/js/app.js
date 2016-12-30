@@ -55,6 +55,7 @@
   require('./bber/modals/book-metadata.controller');
   require('./bber/sheet.factory');
   require('./bber/dropbox.service');
+  require('./bber/localstore.service');
 
 
   // Plugin: Github

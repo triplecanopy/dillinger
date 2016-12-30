@@ -23,17 +23,17 @@ module.exports =
     $scope.createDocument = createDocument;
     $scope.removeDocument = removeDocument;
     $scope.selectDocument = selectDocument;
-    $rootScope.documents  = booksService.getCurrentBook().getItems();
+    $rootScope.documents  = [];
 
     // $rootScope.editor.on('change', debounce(doAutoSave, 2000));
     // $rootScope.$on('autosave', doAutoSave);
-
-    function initDocument() {
-      var book = booksService.getCurrentBook();
-      var item = book.getItemById($rootScope.currentDocument.id);
-      book.setCurrentDocument(item);
-      return $rootScope.$emit('document.refresh');
-    }
+    //
+    // function initDocument() {
+    //   var book = booksService.getCurrentBook();
+    //   var item = book.getItemById($rootScope.currentDocument.id);
+    //   book.setCurrentDocument(item);
+    //   return $rootScope.$emit('document.refresh');
+    // }
 
 
     function save(manuel) {
@@ -72,6 +72,6 @@ module.exports =
       return $rootScope.$emit('document.refresh');
     }
 
-    initDocument();
+    // initDocument();
 
 });

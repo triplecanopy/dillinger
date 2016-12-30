@@ -34,10 +34,7 @@ module.exports =
     getCurrentBookSHA:       getCurrentBookSHA,
     setCurrentCursorValue:   setCurrentCursorValue,
     save:                    save,
-    init:                    init
   };
-
-  service.init();
 
   return service;
 
@@ -412,28 +409,17 @@ module.exports =
 
 
   function save(manual) {
-    if (!angular.isDefined(manual)) {
-      manual = false;
-    }
-    if (manual) {
-      diNotify('Documents Saved.');
-    }
-    console.log('saving all the books');
-    localStorage.setItem('books', angular.toJson(service.books));
-    return localStorage.setItem('currentBook', angular.toJson(service.currentBook));
+    // if (!angular.isDefined(manual)) {
+    //   manual = false;
+    // }
+    // if (manual) {
+    //   diNotify('Documents Saved.');
+    // }
+    // console.log('saving all the books');
+    // localStorage.setItem('books', angular.toJson(service.books));
+    // return localStorage.setItem('currentBook', angular.toJson(service.currentBook));
   }
 
-  function init() {
-    var item, _ref;
-    var _books = angular.fromJson(localStorage.getItem('books')) || [];
-    this.books = _books.map( function(b){ return new Book(b) } )
-    service.currentBook = new Book(angular.fromJson(localStorage.getItem('currentBook')) || {});
-    if (!((_ref = service.books) != null ? _ref.length : void 0)) {
-      item = this.createItem();
-      this.addItem(item);
-      this.setCurrentBook(item);
-      return this.save();
-    }
-  }
+
 
 });
