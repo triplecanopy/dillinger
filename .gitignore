@@ -1,6 +1,12 @@
 .DS_Store
 .env
 
+#BBer
+book/*
+_book/*
+config.yml
+_site/*
+
 #Dillinger
 node_modules/*
 logs/*
