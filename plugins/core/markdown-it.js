@@ -1,7 +1,7 @@
 'use strict';
 
 var hljs = require('highlight.js')
-  , katex = require('katex')
+  // , katex = require('katex')
   , md = require('markdown-it')({
       linkify: true,
       typographer: true,
@@ -18,22 +18,22 @@ var hljs = require('highlight.js')
 /*
   change to Katex for math rendering
  */
-md.use(require('markdown-it-math'), {
-  inlineRenderer: function (str) {
-    try {
-      return '<span class="math inline">' + katex.renderToString (str) + '</span>';
-    } catch (e) {
-      return '<span class="math inline">' + e + '</span>';
-    }
-  },
-  blockRenderer: function (str) {
-    try {
-      return '<span class="math block">' + katex.renderToString (str) + '</span>';
-    } catch (e) {
-      return '<span class="math block">' + e + '</span>';
-    }
-  }
-});
+// md.use(require('markdown-it-math'), {
+//   inlineRenderer: function (str) {
+//     try {
+//       return '<span class="math inline">' + katex.renderToString (str) + '</span>';
+//     } catch (e) {
+//       return '<span class="math inline">' + e + '</span>';
+//     }
+//   },
+//   blockRenderer: function (str) {
+//     try {
+//       return '<span class="math block">' + katex.renderToString (str) + '</span>';
+//     } catch (e) {
+//       return '<span class="math block">' + e + '</span>';
+//     }
+//   }
+// });
 
 md
   .use(require('markdown-it-toc'))
