@@ -8,7 +8,7 @@
   // jQuery
   window.jQuery = require('jquery'),
   require('jquery-ui-bundle/jquery-ui.js'),
-  require('inverseresize/alsoResizeReverse/alsoResizeInverse');
+  // require('inverseresize/alsoResizeReverse/alsoResizeInverse');
 
 
   // AngularJS
