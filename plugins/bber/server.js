@@ -6,9 +6,10 @@ var express = require('express')
   , exec = require('child_process').exec
 
 
-var   cwd = process.cwd()
-    , metadata_path = path.join(cwd,'_book','metadata.yml')
-    , markdown_path = path.join(cwd,'_book','_markdown');
+var cwd = process.cwd()
+  , metadata_path = path.join(cwd,'_book','metadata.yml')
+  , markdown_path = path.join(cwd,'_book','_markdown')
+  , site_path = path.join(cwd,'_site');
 
 
 function listBooks(req, res){
@@ -90,7 +91,7 @@ function bberCommand(req, res){
 }
 
 
-app.use('/preview', express.static('_site'))
+app.use('/preview', express.static(site_path))
 app.get('/bber/books', listBooks);
 app.get('/bber/book',  getBook);
 app.post('/bber/book', saveBook);
