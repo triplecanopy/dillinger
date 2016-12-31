@@ -15,9 +15,9 @@ const logger = require('morgan')
 
 
 
-exports.startServer = function(address, port){
-  app.set('bind-address', address || 'localhost')
-  app.set('port', port || 8080)
+module.exports = (function(){
+  app.set('bind-address', 'localhost')
+  app.set('port', 8080)
 
   app.set('views', path.join(__dirname,'/views'))
   app.set('view engine', 'ejs')
@@ -64,9 +64,6 @@ exports.startServer = function(address, port){
 
   app.use(bber)
 
-  app.listen(app.get('port'), function() {
-      console.log('Express server listening on port ' + app.get('port'))
-      console.log('\nhttp://' + app.get('bind-address') + ':' + app.get('port') + '\n')
-  })
+  return app
 
-}
+})();
