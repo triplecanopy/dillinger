@@ -18,6 +18,7 @@
   require('angular-bootstrap');
 
   require('angular-ui-sortable/dist/sortable');
+  require('angular-module-sanitize');
 
 
   // Base
@@ -53,6 +54,7 @@
   require('./bber/book-documents.controller');
   require('./bber/modals/confirm-delete.controller');
   require('./bber/modals/book-metadata.controller');
+  require('./bber/modals/server-response.controller');
   require('./bber/sheet.factory');
   require('./bber/dropbox.service');
   require('./bber/localstore.service');
