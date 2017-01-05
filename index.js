@@ -1,7 +1,7 @@
 
 'use strict'
 
-const logger = require('morgan')
+var logger = require('morgan')
   , favicon = require('serve-favicon')
   , compress = require('compression')
   , bodyParser = require('body-parser')
@@ -11,13 +11,18 @@ const logger = require('morgan')
   , fs = require('fs')
   , app = express()
   , bber = require('./plugins/bber/server.js')
-  , env = process.env.NODE_ENV || 'development';
+  , env = process.env.NODE_ENV || 'development'
+  , port = 8080
 
+  // websocket vars
+  , url = require('url')
+  , WebSocketServer = require('ws').Server
+  , wss = new WebSocketServer({ port: 9000 })
 
 
 module.exports = (function(){
   app.set('bind-address', 'localhost')
-  app.set('port', 8080)
+  app.set('port', port)
 
   app.set('views', path.join(__dirname,'/views'))
   app.set('view engine', 'ejs')
@@ -60,10 +65,39 @@ module.exports = (function(){
     app.use(errorHandler())
   }
 
-  app.get('/', function(req,res){res.render('index')})
+  app.get('/', function(req,res) { res.render('index') })
 
   app.use(bber)
 
+  // websockets
+  wss.broadcast = function(data) {
+    for (var i in this.clients) {
+      this.clients[i].send(data);
+    }
+  }
+
+  wss.on('connection', function connection(ws) {
+    if (wss.clients.length > 1) {
+      wss.clients.forEach(function each(client) {
+        if (client === ws) {
+          ws.send('This document is already being edited.')
+        }
+      })
+    }
+
+    ws.on('close', function message(data) {
+      wss.broadcast('Connection closed: ' + wss.clients.length + ' user(s) online.')
+    })
+
+    ws.on('message', function message(data) {
+      wss.clients.forEach(function each(client) {
+        if (client !== ws) { client.send(data) }
+      })
+    })
+  })
+
+
+  // export
   return app
 
 })();
