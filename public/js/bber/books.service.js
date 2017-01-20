@@ -308,7 +308,7 @@ module.exports =
    *                      about dragging and dropping files.
    */
 
-  function importFile(file, showTip) { // TODO: should be abstracted for different file types
+  function importFile(file /* , showTip */ ) { // TODO: should be abstracted for different file types
 
     if (!file) {
       return;
@@ -320,46 +320,46 @@ module.exports =
     reader.onloadend = function(event) {
 
       var data = event.target.result
-        , firstFourBitsArray = (new Uint8Array(data)).subarray(0, 4)
+        // , firstFourBitsArray = (new Uint8Array(data)).subarray(0, 4)
         , type = ''
-        , header = ''
+        // , header = ''
         ;
 
       // Snag hex value
-      for(var i = 0; i < firstFourBitsArray.length; i++) {
-         header += firstFourBitsArray[i].toString(16);
-      }
+      // for(var i = 0; i < firstFourBitsArray.length; i++) {
+      //    header += firstFourBitsArray[i].toString(16);
+      // }
 
-      // Determine image type or unknown
-      switch (header) {
-        case '89504e47':
-          type = 'image/png';
-          break;
-        case '47494638':
-          type = 'image/gif';
-          break;
-        case 'ffd8ffe0':
-        case 'ffd8ffe1':
-        case 'ffd8ffe2':
-          type = 'image/jpeg';
-          break;
-        default:
-          type = 'unknown';
-          break;
-      }
+      // // Determine image type or unknown
+      // switch (header) {
+      //   case '89504e47':
+      //     type = 'image/png';
+      //     break;
+      //   case '47494638':
+      //     type = 'image/gif';
+      //     break;
+      //   case 'ffd8ffe0':
+      //   case 'ffd8ffe1':
+      //   case 'ffd8ffe2':
+      //     type = 'image/jpeg';
+      //     break;
+      //   default:
+      //     type = 'unknown';
+      //     break;
+      // }
 
-      if (showTip) {
-        diNotify({ message: 'You can also drag and drop files into dillinger' });
-      }
+      // if (showTip) {
+      //   diNotify({ message: 'You can also drag and drop files into dillinger' });
+      // }
 
-      if (type === 'unknown') {
-        return mdFileReader(file);
-      }
-      else {
+      // if (type === 'unknown') {
+      //   return mdFileReader(file);
+      // }
+      // else {
         // Do the upload of the image to cloud service
         // and return an URL of the image
-        return imageUploader(file);
-      }
+        return fileUploader(file);
+      // }
 
     };
 
@@ -376,7 +376,7 @@ module.exports =
    *            (see: https://developer.mozilla.org/en/docs/Web/API/File).
    *
    */
-  function imageUploader(file) { // TODO: this should be updated to be a generic file uploader
+  function fileUploader(file) { // TODO: this should be updated to be a generic file uploader
 
     var reader = new FileReader()
       , name = file.name

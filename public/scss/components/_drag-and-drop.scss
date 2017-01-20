@@ -1,0 +1,28 @@
+
+// *************************************
+//
+//   body classes for drag and drop visual feedback
+//
+// *************************************
+
+
+$dragover-color: rgba(0, 128, 0, 0.6);
+
+body:before {
+  content: '';
+  opacity: 0;
+  display: block;
+  pointer-events: none;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  z-index: 3;
+  background: transparent;
+  border: 15px solid $dragover-color;
+  box-shadow: inset 0 0 2px $dragover-color;
+  transition: opacity 0.2s ease-out;
+}
+
+body.dragover:before {
+  opacity: 1;
+}

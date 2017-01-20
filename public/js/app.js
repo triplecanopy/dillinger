@@ -61,6 +61,9 @@
   require('./bber/dropbox.service');
   require('./bber/localstore.service');
 
+  require('./bber/import-file.controller');
+  require('./bber/drop-target.directive');
+
 
   // Plugin: Github
   require('./plugins/github/github.service');
@@ -95,9 +98,9 @@
   require('./zen-mode/zen-mode-toggle.directive');
 
   // File import.
-  require('./file-import/drop-target.directive');
-  require('./file-import/choose-file.directive');
-  require('./file-import/import-file.controller');
+  // require('./file-import/drop-target.directive');
+  // require('./file-import/choose-file.directive');
+  // require('./file-import/import-file.controller');
 
   // Configure Dependencies
   angular.module('Dillinger', [

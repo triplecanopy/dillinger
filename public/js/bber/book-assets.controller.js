@@ -7,11 +7,9 @@ module.exports =
   angular
   .module('bBer.controllers.bookAssets', [
     'bBer.books',
-    // 'diDocuments.export',
-    // 'diDocuments.controllers',
     'ui.sortable'
   ])
-  .controller('BookAssets', function($scope, $timeout, $rootScope, booksService /* , $modal, userService,  */) {
+  .controller('BookAssets', function($scope, $timeout, $rootScope, booksService, diNotify /* , $modal, userService,  */) {
 
     $scope.toggleSelect = toggleSelect;
     $scope.createAsset = createAsset;
@@ -29,10 +27,14 @@ module.exports =
     }
 
     function removeAsset(item) {
-      if (confirm('This action will permanently delete' + item.name + '.')) {
-        booksService.removeAsset(item);
-        $rootScope.deleteAsset(item);
-      }
+      diNotify({
+        message: 'This action will permanently delete "' + item.name + '".',
+        duration: 0,
+        confirm: function() {
+          booksService.removeAsset(item);
+          $rootScope.deleteAsset(item);
+        }
+      });
     }
 
     function selectAsset(item) {}
