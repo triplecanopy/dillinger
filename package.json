@@ -9,6 +9,10 @@
   "license": "MIT",
   "contributors": [
     {
+      "name": "Maxwell Simmer",
+      "email": "maxwell.simmer@gmail.com"
+    },
+    {
       "name": "Joe McCann",
       "email": "joe@nodesource.com"
     },
@@ -19,7 +23,7 @@
   ],
   "scripts": {
     "start": "node app.js",
-    "serve:app": "nodemon --watch plugins/bber/server.js app.js",
+    "serve:app": "node_modules/nodemon/bin/nodemon.js --watch plugins/bber/server.js app.js",
     "serve:gulp": "gulp watch",
     "test": "gulp test",
     "preversion": "gulp build --prod",

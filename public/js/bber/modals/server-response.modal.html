@@ -2,5 +2,9 @@
   <button type="button" class="close" ng-click="close()">
     <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
   </button>
-  <pre ng-bind-html="response"></pre>
+  <pre class="server-response" ng-bind-html="response"></pre>
+  <button ng-show="canExecCmd()" type="button" class="btn btn-default clipboard" ng-click="copy()">
+    <span class="glyphicon glyphicon-copy"></span>
+    Copy to Clipboard
+  </button>
 </div>
