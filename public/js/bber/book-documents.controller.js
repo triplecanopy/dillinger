@@ -8,7 +8,7 @@ module.exports =
     'diDocuments.controllers',
     'ui.sortable'
   ])
-  .controller('BookDocuments', function($scope, $timeout, $rootScope, $modal, userService, booksService, debounce) {
+  .controller('BookDocuments', function($scope, $timeout, $rootScope, $modal, userService, booksService) {
 
     // var vm = this;
     //

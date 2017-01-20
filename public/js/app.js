@@ -29,6 +29,7 @@
   require('./components/toggle-preview.directive');
   require('./components/switch.directive');
   require('./components/preview.directive');
+  require('./components/input-onchange.directive');
   require('./components/focus.factory');
 
   require('./components/wtfisdillinger-modal.controller');
@@ -52,6 +53,7 @@
   require('./bber/books.service');
   require('./bber/books.controller');
   require('./bber/book-documents.controller');
+  require('./bber/book-assets.controller');
   require('./bber/modals/confirm-delete.controller');
   require('./bber/modals/book-metadata.controller');
   require('./bber/modals/server-response.controller');

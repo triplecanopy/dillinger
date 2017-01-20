@@ -85,6 +85,31 @@
       color: $c-highlight;
     }
   }
+
+  &.assets {
+    li {
+      margin: 8px 0;
+      padding: 0;
+      &:last-child { margin: 0; }
+      a.asset--add {
+        padding: 24px;
+      }
+      a.asset--name {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        padding: 24px;
+        width: calc(100% - 66px);
+      }
+      a.asset--remove {
+        float: right;
+        padding: 24px;
+        .glyphicon {
+          top: -1px;
+        }
+      }
+    }
+  }
 }
 
 // -------------------------------------

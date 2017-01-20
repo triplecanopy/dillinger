@@ -13,6 +13,7 @@ module.exports =
   var service = {
     currentBook: {},
     books:       [],
+    assets:      [],
 
     getItem:                 getItem,
     getItemByIndex:          getItemByIndex,
@@ -22,6 +23,10 @@ module.exports =
     createItem:              createItem,
     size:                    size,
     getItems:                getItems,
+    getAssets:               getAssets,
+    addAsset:                addAsset,
+    addAssets:               addAssets,
+    removeAsset:             removeAsset,
     removeItems:             removeItems,
     importFile:              importFile,
     setCurrentBook:          setCurrentBook,
@@ -96,6 +101,15 @@ module.exports =
   }
 
   /**
+   *    Remove item from the assets array.
+   *
+   *    @param  {Object}  item  The item to remove.
+   */
+  function removeAsset(item) {
+    return service.assets.splice(service.assets.indexOf(item), 1);
+  }
+
+  /**
    *    Creates a new document item.
    *
    *    @param  {Object}  props  Item properties (`title`, `body`, `id`).
@@ -119,10 +133,33 @@ module.exports =
   }
 
   /**
-   *    Remove all items frm the files array.
+   *    Get all assets.
+   */
+  function getAssets() {
+    return service.assets;
+  }
+
+  /**
+   *    Create asset list.
+   */
+  function addAssets(data) {
+    service.assets = data;
+    return service.assets;
+  }
+
+  /**
+   *    Add an asset.
+   */
+  function addAsset(item) {
+    return service.assets.push(item);
+  }
+
+  /**
+   *    Remove all items from the files array.
    */
   function removeItems() {
     service.books = [];
+    service.assets = [];
     service.currentBook = {};
     return false;
   }
@@ -260,6 +297,7 @@ module.exports =
 
     reader.readAsText(file);
   }
+
   /**
    *    Generic file import method. Checks for images and markdown.
    *
@@ -270,7 +308,7 @@ module.exports =
    *                      about dragging and dropping files.
    */
 
-  function importFile(file, showTip) {
+  function importFile(file, showTip) { // TODO: should be abstracted for different file types
 
     if (!file) {
       return;
@@ -294,19 +332,19 @@ module.exports =
 
       // Determine image type or unknown
       switch (header) {
-        case "89504e47":
-          type = "image/png";
+        case '89504e47':
+          type = 'image/png';
           break;
-        case "47494638":
-          type = "image/gif";
+        case '47494638':
+          type = 'image/gif';
           break;
-        case "ffd8ffe0":
-        case "ffd8ffe1":
-        case "ffd8ffe2":
-          type = "image/jpeg";
+        case 'ffd8ffe0':
+        case 'ffd8ffe1':
+        case 'ffd8ffe2':
+          type = 'image/jpeg';
           break;
         default:
-          type = "unknown";
+          type = 'unknown';
           break;
       }
 
@@ -314,20 +352,20 @@ module.exports =
         diNotify({ message: 'You can also drag and drop files into dillinger' });
       }
 
-      if(type === 'unknown') {
-        return mdFileReader(file)
+      if (type === 'unknown') {
+        return mdFileReader(file);
       }
-      else{
+      else {
         // Do the upload of the image to cloud service
         // and return an URL of the image
-        return imageUploader(file)
+        return imageUploader(file);
       }
 
-    }
+    };
 
     // Read as array buffer so we can determine if image
     // from the bits
-    reader.readAsArrayBuffer(file)
+    reader.readAsArrayBuffer(file);
 
   }
 
@@ -338,56 +376,68 @@ module.exports =
    *            (see: https://developer.mozilla.org/en/docs/Web/API/File).
    *
    */
-  function imageUploader(file) {
+  function imageUploader(file) { // TODO: this should be updated to be a generic file uploader
 
     var reader = new FileReader()
       , name = file.name
+      , size = file.size
+      , type = file.type
       ;
 
     reader.onloadend = function() {
 
-      var di = diNotify({
-        message: 'Uploading Image to Dropbox...',
-        duration: 5000
-      });
-      return $http.post('save/dropbox/image', {
-        image_name: name,
-        fileContents: reader.result
-      }).success(function(result) {
-
-        if (angular.isDefined(di.$scope)) {
-          di.$scope.$close();
-        }
-        if (result.data.error) {
-          return diNotify({
-            message: 'An Error occured: ' + result.data.error,
-            duration: 5000
-          });
-        } else {
-          var public_url = result.data.url
-          // Now take public_url and and wrap in markdown
-          var template = '!['+name+']('+public_url+')'
-          // Now take the ace editor cursor and make the current
-          // value the template
-          service.setCurrentCursorValue(template)
-
-          // Track event in GA
-          // if (window.ga) {
-          //   ga('send', 'event', 'click', 'Upload Image To Dropbox', 'Upload To...')
-          // }
-          return diNotify({
-            message: 'Successfully uploaded image to Dropbox.',
-            duration: 4000
-          });
-        }
-      }).error(function(err) {
-        return diNotify({
-          message: 'An Error occured: ' + err
-        });
+      return $http.post('/bber/assets', {
+        name: name,
+        size: size,
+        type: type,
+        content: reader.result
+      }).then(function(resp) {
+        addAsset(resp.data);
       });
 
-    }
-    reader.readAsDataURL(file)
+      // var di = diNotify({
+      //   message: 'Uploading Image to Dropbox...',
+      //   duration: 5000
+      // });
+      // return $http.post('save/dropbox/image', {
+      //   image_name: name,
+      //   fileContents: reader.result
+      // }).success(function(result) {
+
+      //   if (angular.isDefined(di.$scope)) {
+      //     di.$scope.$close();
+      //   }
+      //   if (result.data.error) {
+      //     return diNotify({
+      //       message: 'An Error occured: ' + result.data.error,
+      //       duration: 5000
+      //     });
+      //   } else {
+      //     var public_url = result.data.url;
+      //     // Now take public_url and and wrap in markdown
+      //     var template = '!['+name+']('+public_url+')';
+      //     // Now take the ace editor cursor and make the current
+      //     // value the template
+      //     service.setCurrentCursorValue(template);
+
+      //     // Track event in GA
+      //     // if (window.ga) {
+      //     //   ga('send', 'event', 'click', 'Upload Image To Dropbox', 'Upload To...')
+      //     // }
+      //     return diNotify({
+      //       message: 'Successfully uploaded image to Dropbox.',
+      //       duration: 4000
+      //     });
+      //   }
+      // }).error(function(err) {
+      //   return diNotify({
+      //     message: 'An Error occured: ' + err
+      //   });
+      // });
+
+    };
+
+    reader.readAsDataURL(file);
   }
 
   /**

@@ -1,0 +1,8 @@
+<li ng-repeat="asset in assets">
+  <a class="asset--remove" ng-click="removeAsset(asset)">
+    <span class="glyphicon glyphicon-trash"></span>
+  </a>
+  <a class="asset--name" ng-click="selectAsset(asset)">
+    {{asset.name}}
+  </a>
+</li>
