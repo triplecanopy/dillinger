@@ -1,5 +1,6 @@
 
 'use strict';
+
 module.exports =
   angular
   .module('bBer.controllers.books', [
@@ -7,11 +8,13 @@ module.exports =
     'diDocuments.export',
     'diDocuments.controllers',
     'bBer.modals.metadata',
-    'bBer.modals.delete'
+    'bBer.modals.delete',
+    'bBer.modals.response'
   ])
-  .controller('Books', function($scope, $timeout, $rootScope, $modal, userService, booksService, debounce) {
+  .controller('Books', function($scope, $timeout, $rootScope, $modal, userService, booksService, debounce, $sce) {
 
   var vm = this;
+  var ansi_up = require('ansi_up');
 
   vm.status = {
     import:     true,
@@ -21,17 +24,18 @@ module.exports =
     document:   false,
   };
 
-  $scope.profile        = userService.profile;
-  $scope.saveBook       = saveBook;
-  $scope.createBook     = createBook;
-  $scope.removeBook     = removeBook;
-  $scope.selectBook     = selectBook;
-  $scope.editBookMetadata = editBookMetadata;
+  $scope.profile            = userService.profile;
+  $scope.saveBook           = saveBook;
+  $scope.createBook         = createBook;
+  $scope.removeBook         = removeBook;
+  $scope.selectBook         = selectBook;
+  $scope.editBookMetadata   = editBookMetadata;
 
   $rootScope.books = booksService.getItems();
 
   $rootScope.editor.on('change', debounce(doAutoSave, 2000));
   $rootScope.$on('autosave', doAutoSave);
+  $rootScope.$on('server.response', showServerResponse);
 
   function saveBook(manual) {
     var book = booksService.getCurrentBook();
@@ -66,7 +70,7 @@ module.exports =
   }
 
 
-  function editBookMetadata(item){
+  function editBookMetadata(item) {
     var modalScope = $rootScope.$new();
     modalScope.book = item;
     $modal.open({
@@ -76,8 +80,6 @@ module.exports =
       windowClass: 'modal--dillinger'
     });
   }
-
-
 
   function createBook() {
     var item;
@@ -92,6 +94,19 @@ module.exports =
       return saveBook();
     }
     return false;
+  }
+
+  function showServerResponse(e, resp) {
+    var modalScope = $rootScope.$new();
+    var data = resp.data.split('\n').join('<br>');
+    var html = ansi_up.ansi_to_html(data);
+    modalScope.response = $sce.trustAsHtml(html);
+    $modal.open({
+      template: require('raw!./modals/server-response.modal.html'),
+      scope: modalScope,
+      controller: 'ServerResponse',
+      windowClass: 'modal--dillinger'
+    });
   }
 
   $scope.$on('$destroy', function() {
