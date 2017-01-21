@@ -127,7 +127,7 @@ module.exports =
         return _doLayout();
       });
 
-      if (this.args.duration > 0) {
+      if (this.args.duration > 0 && !this.args.confirm) {
         return $timeout(function() {
           return self.$scope.$close();
         }, this.args.duration);

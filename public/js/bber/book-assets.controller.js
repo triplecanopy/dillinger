@@ -9,11 +9,12 @@ module.exports =
     'bBer.books',
     'ui.sortable'
   ])
-  .controller('BookAssets', function($scope, $timeout, $rootScope, booksService, diNotify /* , $modal, userService,  */) {
+  .controller('BookAssets', function($scope, $timeout, $rootScope, booksService, diNotify) {
 
     $scope.toggleSelect = toggleSelect;
     $scope.createAsset = createAsset;
     $scope.removeAsset = removeAsset;
+    $scope.insertAsset = insertAsset;
     $scope.selectAsset = selectAsset;
 
     function createAsset(e) {
@@ -29,12 +30,26 @@ module.exports =
     function removeAsset(item) {
       diNotify({
         message: 'This action will permanently delete "' + item.name + '".',
-        duration: 0,
         confirm: function() {
           booksService.removeAsset(item);
           $rootScope.deleteAsset(item);
         }
       });
+    }
+
+    function directiveString(item) {
+      var type = item.type.substring(0, item.type.indexOf('/'));
+      switch (type) {
+        case 'image': return '+ image url "/OPS/images/' + item.name + '"\n';
+        case 'audio': return '+ image url "/OPS/audio/' + item.name + '"\n';
+        case 'video': return '+ image url "/OPS/video/' + item.name + '"\n';
+        default: return '';
+      }
+    }
+
+    function insertAsset(item) {
+      var str = directiveString(item);
+      if (str) { $rootScope.editor.insert(str); }
     }
 
     function selectAsset(item) {}

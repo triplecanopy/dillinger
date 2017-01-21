@@ -4,6 +4,7 @@
 var express = require('express')
   , app = module.exports = express()
   , fs = require('fs')
+  , mime = require('mime')
   , path = require('path')
   , yaml = require('js-yaml')
   , exec = require('child_process').exec;
@@ -90,26 +91,12 @@ function addAsset(req, res) {
     , type = body.type
     , name = body.name
     , dir = '';
-  switch (type) {
-    case 'image/jpeg':
-    case 'image/png':
-    case 'image/gif':
+  switch (type.substring(0, type.indexOf('/'))) {
+    case 'image':
       dir = '_images';
       content = content.replace(/^data:image\/[^;]+;base64,/, '');
       mode = 'base64';
       break;
-
-    // TODO: add additionl media types
-    //
-    // case 'application/x-font-ttf':
-    // case 'application/x-font-truetype':
-    // case 'application/x-font-opentype':
-    // case 'application/font-woff':
-    // case 'application/font-woff2':
-    // case 'application/vnd.ms-fontobject':
-    // case 'application/font-sfnt':
-    //   dir = '_fonts';
-    //   break;
     default:
       break;
   }
@@ -119,7 +106,8 @@ function addAsset(req, res) {
     return res.send({
       id: Math.round(Math.random() * 1000000),
       name: name,
-      path: path.join(asset_path, dir, name)
+      path: path.join(asset_path, dir, name),
+      type: type
     });
   });
 }
@@ -128,10 +116,12 @@ function getAssets(req, res) {
   var assets = [];
   asset_dirs.forEach(function(dir) {
     fs.readdirSync(path.join(asset_path, dir)).forEach(function (name) {
+      var fpath = path.join(asset_path, dir, name);
       assets.push({
         id: Math.round(Math.random() * 1000000),
         name: name,
-        path: path.join(asset_path, dir, name)
+        path: fpath,
+        type: mime.lookup(fpath)
       });
     });
   });
