@@ -9,8 +9,7 @@ module.exports =
     'diDocuments.controllers',
     'bBer.modals.metadata',
     'bBer.modals.delete',
-    'bBer.modals.response',
-    'ngSanitize'
+    'bBer.modals.response'
   ])
   .controller('Books', function($scope, $timeout, $rootScope, $modal, userService, booksService, debounce, $sce) {
 
@@ -71,7 +70,7 @@ module.exports =
   }
 
 
-  function editBookMetadata(item){
+  function editBookMetadata(item) {
     var modalScope = $rootScope.$new();
     modalScope.book = item;
     $modal.open({

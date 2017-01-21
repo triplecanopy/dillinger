@@ -30,13 +30,24 @@
           </ul>
         </li>
 
+        <!-- Asset List -->
+        <li class="menu-item menu-item--documents in-sidebar" ng-controller='BookAssets as asset'>
+          <a class="menu-link" ng-click="book.status.asset = !book.status.asset">
+          <span>Book Assets</span> <span class="caret"></span></a>
+
+          <ul ui-sortable ng-model='assets' class="assets sidebar-list" collapse="book.status.asset" role="menu">
+            <%- include dropdowns/assets %>
+            <li><a class="asset--add" ng-click="toggleSelect()">Add New Book Asset</a></li>
+          </ul>
+          <input input-onchange="createAsset" class="hidden file-input__assets" type="file" multiple name="file-input__assets">
+        </li>
+
       </ul>
     </nav>
 
     <a class="btn btn--save" ng-click="save(currentBook)">Save</a>
     <a class="btn btn--save" ng-click="bberCommand('build')">bber build</a>
     <a class="btn btn--save" ng-click="bberCommand('publish')">bber publish</a>
-
 
   </div>
 </div>

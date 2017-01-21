@@ -34,6 +34,10 @@
 //   Modifiers
 // -------------------------------------
 
+  &--muted {
+    background-color: $c-button-muted;
+  }
+
   &--new,
   &--save {
     display: block;

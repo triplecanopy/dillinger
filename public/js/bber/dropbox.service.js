@@ -12,7 +12,7 @@ module.exports = angular.module('bBer.dropbox',[])
     listBooks:         listBooks,
     loadBook:          loadBook,
     saveBook:          saveBook
-  }
+  };
 
 
   function getAuthenticationUrl(){
@@ -35,28 +35,28 @@ module.exports = angular.module('bBer.dropbox',[])
 
   function saveBook(book){
     var dbx = getClient();
-    var book_path = `/${book.folderName}`
+    var book_path = '/' + book.folderName;
 
     //delete existing markdown, if it exists
     dbx.filesSearch({
-      path:`${book_path}/_book/_markdown`,
-      query: `.md`,
-      mode:'filename'
+      path: book_path + '/_book/_markdown',
+      query: '.md',
+      mode: 'filename'
      })
     .then( function(resp){
       if(resp.matches.length > 0){
-        dbx.filesDelete({ path:`${book_path}/_book/_markdown`});
+        dbx.filesDelete({ path: book_path + '/_book/_markdown'});
       }
     }, function(resp){
       return true;
     })
     .then(function(){
-      angular.forEach(book.asBberFiles(),function(f){
+      angular.forEach(book.asBberFiles(),function(f) {
         dbx.filesUpload({
-          path: `${book_path}/${f.path}`,
+          path: book_path + '/' + f.path,
           contents: f.contents
-        })
-      })
+        });
+      });
     });
   }
 
@@ -74,10 +74,10 @@ module.exports = angular.module('bBer.dropbox',[])
 
   function loadFile(path){
     var dbx = getClient();
-    return dbx.filesDownload({path: path}).then(function(resp){
+    return dbx.filesDownload({ path: path }).then(function(resp){
       return $q(function(resolve, reject){
         var reader = new FileReader();
-        reader.addEventListener("loadend", function() {
+        reader.addEventListener('loadend', function() {
           if(reader.error){
             reject(reader.error);
           } else {
@@ -104,7 +104,7 @@ module.exports = angular.module('bBer.dropbox',[])
         if(resp.more){
           return _search(resp.start);
         } else {
-          return matches
+          return matches;
         }
       });
     }

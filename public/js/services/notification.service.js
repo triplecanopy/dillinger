@@ -64,7 +64,8 @@ module.exports =
         duration:  2000,
         container: document.body,
         message:   'Notification',
-        template:  require('raw!../base/diNotify.html') // inline template
+        template:  require('raw!../base/diNotify.html'), // inline template
+        confirm:   false
       };
 
       // DiNotify has been called with a string, let's make it an object
@@ -79,6 +80,7 @@ module.exports =
 
       this.$el             = null;
       this.$scope.$message = args.message;
+      this.$scope.$confirm = args.confirm;
 
       this.build();
       this.addEvents();
@@ -114,11 +116,18 @@ module.exports =
         return _doLayout();
       };
 
+      this.$scope.$choice = function(yes) {
+        this.$close();
+        if (yes) {
+          this.$confirm();
+        }
+      }
+
       $timeout(function() {
         return _doLayout();
       });
 
-      if (this.args.duration > 0) {
+      if (this.args.duration > 0 && !this.args.confirm) {
         return $timeout(function() {
           return self.$scope.$close();
         }, this.args.duration);
