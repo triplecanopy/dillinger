@@ -36,7 +36,7 @@ module.exports = {
         return '<div class="figure-sm">\
           <figure id="ref' + id + '">\
             <a href="' + page + '#' + id + '">\
-              <img src="/OPS/images/' + escapeHtml(attrs.url) + '" alt="' + attrs.alt + '"/>\
+              <img src="/_book/_images/' + escapeHtml(attrs.url) + '" alt="' + attrs.alt + '"/>\
             </a>\
           </figure>\
         </div>'

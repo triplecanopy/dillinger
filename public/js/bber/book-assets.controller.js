@@ -40,9 +40,9 @@ module.exports =
     function directiveString(item) {
       var type = item.type.substring(0, item.type.indexOf('/'));
       switch (type) {
-        case 'image': return '+ image url "/OPS/images/' + item.name + '"\n';
-        case 'audio': return '+ image url "/OPS/audio/' + item.name + '"\n';
-        case 'video': return '+ image url "/OPS/video/' + item.name + '"\n';
+        case 'image': return '+ image url "' + item.name + '"\n';
+        case 'audio': return '+ image url "' + item.name + '"\n';
+        case 'video': return '+ image url "' + item.name + '"\n';
         default: return '';
       }
     }

@@ -14,8 +14,7 @@ var cwd = process.cwd()
   , markdown_path = path.join(cwd, '_book', '_markdown')
   , asset_path = path.join(cwd, '_book')
   , site_path = path.join(cwd, '_site')
-  , dev_path = path.join(cwd, 'book/OPS/')
-  , asset_dirs = ['_images', '_fonts', '_javascripts' /* , '_stylesheets' */];
+  , asset_dirs = ['_images' /*, '_fonts', '_javascripts' , '_stylesheets' */];
 
 function listBooks(req, res) {
   res.send('');
@@ -137,8 +136,8 @@ function removeAsset(req, res) {
 }
 
 
-app.use('/preview', express.static(site_path))
-app.use('/OPS', express.static(dev_path))
+app.use('/preview', express.static(site_path));
+app.use('/_book', express.static(asset_path));
 app.get('/bber/books', listBooks);
 app.get('/bber/book', getBook);
 app.post('/bber/book', saveBook);
