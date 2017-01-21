@@ -41,8 +41,8 @@ module.exports =
       var type = item.type.substring(0, item.type.indexOf('/'));
       switch (type) {
         case 'image': return '+ image url "' + item.name + '"\n';
-        case 'audio': return '+ image url "' + item.name + '"\n';
-        case 'video': return '+ image url "' + item.name + '"\n';
+        case 'audio': return '+ audio url "' + item.name + '"\n';
+        case 'video': return '+ video url "' + item.name + '"\n';
         default: return '';
       }
     }
