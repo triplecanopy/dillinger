@@ -7,9 +7,10 @@ module.exports =
   angular
   .module('bBer.controllers.bookAssets', [
     'bBer.books',
-    'ui.sortable'
+    'ui.sortable',
+    'bBer.modals.delete'
   ])
-  .controller('BookAssets', function($scope, $timeout, $rootScope, booksService, diNotify) {
+  .controller('BookAssets', function($scope, $timeout, $rootScope, $modal, booksService) {
 
     $scope.toggleSelect = toggleSelect;
     $scope.createAsset = createAsset;
@@ -28,18 +29,18 @@ module.exports =
     }
 
     function removeAsset(item) {
-      diNotify({
-        message: 'This action will permanently delete "' + item.name + '".',
-        confirm: function() {
-          booksService.removeAsset(item);
-          $rootScope.deleteAsset(item);
-        }
+      var modalScope = $rootScope.$new();
+      modalScope.item = item;
+      $modal.open({
+        template: require('raw!./modals/confirm-delete.modal.html'),
+        scope: modalScope,
+        controller: 'ConfirmDelete',
+        windowClass: 'modal--dillinger'
       });
     }
 
     function directiveString(item) {
-      var type = item.type.substring(0, item.type.indexOf('/'));
-      switch (type) {
+      switch (item.type) {
         case 'image': return '+ image url "' + item.name + '"\n';
         case 'audio': return '+ audio url "' + item.name + '"\n';
         case 'video': return '+ video url "' + item.name + '"\n';

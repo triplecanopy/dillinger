@@ -5,5 +5,8 @@
     'octocat': document.isGithubFile
     }"
   >
-  <a ng-click="selectDocument(document)">{{document.title}}</a>
+  <a class="document--remove" ng-click="removeDocument(document)">
+    <span class="glyphicon glyphicon-trash"></span>
+  </a>
+  <a class="document--title" ng-click="selectDocument(document)">{{document.title}}</a>
 </li>

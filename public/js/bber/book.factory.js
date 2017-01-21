@@ -104,9 +104,9 @@ module.exports = angular
      *    @param  {Object}  props  Item properties (`title`, `body`, `id`).
      */
     function createItem(props) {
-      var pad = _.padStart(String(this.size()+1), 4,'0');
-      var title = {title: 'section-' + pad + '.md'};
-      return new BookSheet(angular.extend({},props,title));
+      var pad = _.padStart(String(this.size() + 1), 4, '0');
+      var title = { title: 'section-' + pad + '.md' };
+      return new BookSheet(angular.extend({}, props, title));
     }
 
     /**

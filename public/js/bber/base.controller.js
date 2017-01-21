@@ -54,6 +54,7 @@ module.exports =
 
   var updateDocument = function() {
     $rootScope.currentDocument = booksService.getCurrentBook().getCurrentDocument();
+    console.log($rootScope.currentDocument)
     return $rootScope.editor.getSession().setValue($rootScope.currentDocument.body);
   };
 

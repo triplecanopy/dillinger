@@ -24,9 +24,9 @@
           <a class="menu-link" ng-click="book.status.document = !book.status.document">
           <span>Book Sections</span> <span class="caret"></span></a>
 
-          <ul ui-sortable ng-model='documents' class="documents sidebar-list" collapse="book.status.document" role="menu"  >
+          <ul ui-sortable ng-model="documents" class="documents sidebar-list" collapse="book.status.document" role="menu">
             <%- include dropdowns/documents %>
-            <li><a ng-click="createDocument()">New Book Section</a></li>
+            <li><a class="document--add" ng-click="createDocument()">New Book Section</a></li>
           </ul>
         </li>
 
@@ -35,11 +35,11 @@
           <a class="menu-link" ng-click="book.status.asset = !book.status.asset">
           <span>Book Assets</span> <span class="caret"></span></a>
 
-          <ul ui-sortable ng-model='assets' class="assets sidebar-list" collapse="book.status.asset" role="menu">
+          <ul class="assets sidebar-list" collapse="book.status.asset" role="menu">
             <%- include dropdowns/assets %>
             <li><a class="asset--add" ng-click="toggleSelect()">Add New Book Asset</a></li>
           </ul>
-          <input input-onchange="createAsset" class="hidden file-input__assets" type="file" multiple name="file-input__assets">
+          <input input-onchange="createAsset" class="hidden file-input__assets" type="file" multiple accepts="image/*,audio/*,video/*,.md,.markdown" name="file-input__assets">
         </li>
 
       </ul>

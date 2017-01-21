@@ -259,44 +259,6 @@ module.exports =
     return false;
   }
 
-  /**
-   *    Import a md file into dillinger.
-   *
-   *    @param  {File}  file  The file to import
-   *            (see: https://developer.mozilla.org/en/docs/Web/API/File).
-   *
-   */
-  function mdFileReader(file){
-
-    var reader = new FileReader()
-
-    reader.onload = function(event) {
-
-      var text = event.target.result
-
-      if (isBinaryFile(text)) {
-        return diNotify({
-          message: 'Importing binary files will cause dillinger to become unresponsive',
-          duration: 4000
-        })
-      }
-
-      // Create a new document.
-      var item = createItem();
-      addItem(item);
-      setCurrentBook(item);
-
-      // Set the new documents title and body.
-      setCurrentBookTitle(file.name);
-      setCurrentBookBody(text);
-
-      // Refresh the editor and proview.
-      $rootScope.$emit('document.refresh');
-
-      }
-
-    reader.readAsText(file);
-  }
 
   /**
    *    Generic file import method. Checks for images and markdown.
@@ -308,65 +270,24 @@ module.exports =
    *                      about dragging and dropping files.
    */
 
-  function importFile(file /* , showTip */ ) { // TODO: should be abstracted for different file types
+  function importFile(file) {
+    if (!file) { return; }
 
-    if (!file) {
-      return;
-    }
+    var reader = new FileReader(),
+      mimetype = file.type;
 
-    var reader = new FileReader();
+    reader.onload = function(e) {
+      var text = e.target.result;
 
-    // If it is text or image or something else
-    reader.onloadend = function(event) {
+      if (mimetype === 'text/markdown' && !isBinaryFile(text)) { // update MD view with new document
+        var data = { body: text };
+        $rootScope.$emit('document.insert', data);
+      }
 
-      var data = event.target.result
-        // , firstFourBitsArray = (new Uint8Array(data)).subarray(0, 4)
-        , type = ''
-        // , header = ''
-        ;
-
-      // Snag hex value
-      // for(var i = 0; i < firstFourBitsArray.length; i++) {
-      //    header += firstFourBitsArray[i].toString(16);
-      // }
-
-      // // Determine image type or unknown
-      // switch (header) {
-      //   case '89504e47':
-      //     type = 'image/png';
-      //     break;
-      //   case '47494638':
-      //     type = 'image/gif';
-      //     break;
-      //   case 'ffd8ffe0':
-      //   case 'ffd8ffe1':
-      //   case 'ffd8ffe2':
-      //     type = 'image/jpeg';
-      //     break;
-      //   default:
-      //     type = 'unknown';
-      //     break;
-      // }
-
-      // if (showTip) {
-      //   diNotify({ message: 'You can also drag and drop files into dillinger' });
-      // }
-
-      // if (type === 'unknown') {
-      //   return mdFileReader(file);
-      // }
-      // else {
-        // Do the upload of the image to cloud service
-        // and return an URL of the image
-        return fileUploader(file);
-      // }
-
+      fileUploader(file);
     };
 
-    // Read as array buffer so we can determine if image
-    // from the bits
-    reader.readAsArrayBuffer(file);
-
+    reader.readAsText(file);
   }
 
   /**
@@ -376,23 +297,26 @@ module.exports =
    *            (see: https://developer.mozilla.org/en/docs/Web/API/File).
    *
    */
-  function fileUploader(file) { // TODO: this should be updated to be a generic file uploader
-
-    var reader = new FileReader()
-      , name = file.name
-      , size = file.size
-      , type = file.type
-      ;
+  function fileUploader(file) {
+    var reader = new FileReader(),
+      name = file.name,
+      size = file.size,
+      type = file.type.substring(0, file.type.indexOf('/')),
+      mimetype = file.type;
 
     reader.onloadend = function() {
-
       return $http.post('/bber/assets', {
         name: name,
         size: size,
         type: type,
+        mimetype: mimetype,
         content: reader.result
-      }).then(function(resp) {
+      }).success(function(resp) {
         addAsset(resp.data);
+      }).error(function(err) {
+        return diNotify({
+          message: 'An Error occured: ' + err
+        });
       });
 
       // var di = diNotify({
@@ -437,7 +361,7 @@ module.exports =
 
     };
 
-    reader.readAsDataURL(file);
+    reader.readAsBinaryString(file);
   }
 
   /**

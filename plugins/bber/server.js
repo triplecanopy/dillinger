@@ -4,7 +4,7 @@
 var express = require('express')
   , app = module.exports = express()
   , fs = require('fs')
-  , mime = require('mime')
+  , mime = require('mime-types')
   , path = require('path')
   , yaml = require('js-yaml')
   , exec = require('child_process').exec;
@@ -59,6 +59,7 @@ function saveBook(req, res) {
 
   // delete existing markdown
   fs.readdirSync(markdown_path).forEach(function (fname) {
+    ensurePathExists(markdown_path);
     if (fname.match(/.*\.md/)) {
       fs.unlinkSync(path.join(markdown_path, fname));
     }
@@ -84,31 +85,37 @@ function bberCommand(req, res) {
   }
 }
 
+function assetify(_path, _dir, _name) {
+  var fpath = path.join(_path, _dir, _name);
+  var mimetype = mime.lookup(fpath);
+  var type = mimetype.substring(0, mimetype.indexOf('/'));
+  return {
+    id: Math.round(Math.random() * 1000000),
+    name: _name,
+    path: fpath,
+    type: type,
+    mimetype: mimetype
+  };
+}
+
 function addAsset(req, res) {
-  var body = req.body
-    , content = body.content
-    , mode = 'utf8'
-    , type = body.type
-    , name = body.name
-    , dir = '';
-  switch (type.substring(0, type.indexOf('/'))) {
+  var body = req.body,
+    buffer = new Buffer(body.content, 'binary'),
+    type = body.type,
+    name = body.name,
+    dir = '';
+  switch (type) {
     case 'image':
       dir = '_images';
-      content = content.replace(/^data:image\/[^;]+;base64,/, '');
-      mode = 'base64';
       break;
     default:
       break;
   }
 
-  fs.writeFile(path.join(asset_path, dir, name), content, mode, function(err) {
+  fs.writeFile(path.join(asset_path, dir, name), buffer, 'utf8', function(err) {
     if (err) { return res.send(err); }
-    return res.send({
-      id: Math.round(Math.random() * 1000000),
-      name: name,
-      path: path.join(asset_path, dir, name),
-      type: type
-    });
+    var asset = assetify(asset_path, dir, name);
+    return res.send(asset);
   });
 }
 
@@ -116,13 +123,8 @@ function getAssets(req, res) {
   var assets = [];
   asset_dirs.forEach(function(dir) {
     fs.readdirSync(path.join(asset_path, dir)).forEach(function (name) {
-      var fpath = path.join(asset_path, dir, name);
-      assets.push({
-        id: Math.round(Math.random() * 1000000),
-        name: name,
-        path: fpath,
-        type: mime.lookup(fpath)
-      });
+      var asset = assetify(asset_path, dir, name);
+      assets.push(asset);
     });
   });
   res.send(assets);
