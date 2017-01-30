@@ -9,8 +9,6 @@ module.exports =
   .factory('BookSheet', function() {
 
     return function(sheetData) {
-      // console.log('sheet  ---')
-      // console.log(sheetData)
       angular.extend(this, {
         id: new Date().getTime() + Math.random(1000),
         title: 'section.md',

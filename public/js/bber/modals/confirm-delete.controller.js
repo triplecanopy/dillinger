@@ -20,7 +20,6 @@ module.exports =
             $rootScope.deleteAsset(item);
             break;
           case ('md'):
-            console.log('remove md file')
             documentsService.removeItem(item);
             var next = documentsService.getItemByIndex(0);
             documentsService.setCurrentDocument(next);
