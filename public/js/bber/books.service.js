@@ -38,6 +38,8 @@ module.exports =
     setCurrentBookSHA:       setCurrentBookSHA,
     getCurrentBookSHA:       getCurrentBookSHA,
     setCurrentCursorValue:   setCurrentCursorValue,
+    setCurrentDocument:      setCurrentDocument,
+    getCurrentDocument:      getCurrentDocument,
     save:                    save,
   };
 
@@ -60,7 +62,7 @@ module.exports =
    *    @param  {Integer}  index  The index number.
    */
   function getItemByIndex(index) {
-    return service.books[index];
+    return service.currentBook.files[index];
   }
 
   /**
@@ -97,7 +99,7 @@ module.exports =
    *    @param  {Object}  item  The item to remove.
    */
   function removeItem(item) {
-    return service.books.splice(service.books.indexOf(item), 1);
+    return service.currentBook.files.splice(service.currentBook.files.indexOf(item), 1);
   }
 
   /**
@@ -174,6 +176,21 @@ module.exports =
   function setCurrentBook(item) {
     service.currentBook = item;
     return item;
+  }
+
+  /**
+   *    Update the current document.
+   */
+  function setCurrentDocument(item) {
+    service.currentBook.currentDocument = item;
+    return item;
+  }
+
+  /**
+   *    Retrieve the current document.
+   */
+  function getCurrentDocument() {
+    return service.currentBook.currentDocument;
   }
 
   /**
@@ -311,11 +328,11 @@ module.exports =
         type: type,
         mimetype: mimetype,
         content: reader.result
-      }).success(function(resp) {
+      }).then(function successCallback(resp) {
         addAsset(resp.data);
-      }).error(function(err) {
+      }, function errorCallback(err) {
         return diNotify({
-          message: 'An Error occured: ' + err
+          message: 'An Error occured: ' + err.message
         });
       });
 

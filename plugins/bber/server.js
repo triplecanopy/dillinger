@@ -28,8 +28,12 @@ function getBook(req, res) {
   book.meta = yaml.safeLoad(fs.readFileSync(metadata_path, 'utf8'));
   fs.readdirSync(markdown_path).forEach(function (fname) {
     if (fname.match(/.*\.md/)) {
-      var file = { title: fname };
-      file.body = fs.readFileSync(path.join(markdown_path, fname), 'utf8');
+      var fpath = path.join(markdown_path, fname);
+      var file = {
+        title: fname,
+        path: fpath
+      };
+      file.body = fs.readFileSync(fpath, 'utf8');
       book.files.push(file);
     }
   });

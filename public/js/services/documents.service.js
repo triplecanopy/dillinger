@@ -138,6 +138,7 @@ module.exports =
    *                            to work.
    */
   function setCurrentDocument(item) {
+    console.log('setting')
     service.currentDocument = item;
     return item;
   }

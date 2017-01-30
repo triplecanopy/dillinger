@@ -53,7 +53,8 @@ module.exports =
   };
 
   var updateDocument = function() {
-    $rootScope.currentDocument = booksService.getCurrentBook().getCurrentDocument();
+    $rootScope.currentBook = booksService.getCurrentBook();
+    $rootScope.currentDocument = $rootScope.currentBook.getCurrentDocument();
     return $rootScope.editor.getSession().setValue($rootScope.currentDocument.body);
   };
 

@@ -12,18 +12,19 @@ module.exports =
     $scope.ok = function() {
       $timeout(function() {
         switch (type) {
-          case ('image'):
-          case ('font'):
-          case ('audio'):
-          case ('video'):
+          case 'image':
+          case 'font':
+          case 'audio':
+          case 'video':
             booksService.removeAsset(item);
             $rootScope.deleteAsset(item);
             break;
-          case ('md'):
-            documentsService.removeItem(item);
-            var next = documentsService.getItemByIndex(0);
-            documentsService.setCurrentDocument(next);
+          case 'md':
+            booksService.removeItem(item);
+            var next = booksService.getItemByIndex(0);
+            booksService.setCurrentDocument(next);
             $rootScope.$emit('document.refresh');
+            $rootScope.deleteAsset(item);
             break;
           default:
             console.log('Unknown type, not deleting.');
