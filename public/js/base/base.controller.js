@@ -15,6 +15,7 @@ module.exports =
     'diBase.directives.menuToggle',
     'diBase.directives.settingsToggle',
     'diBase.directives.previewToggle',
+    'diBase.directives.inputOnchange',
     'diBase.directives.preview'
   ])
   .controller('Base', function($scope, $rootScope, userService, documentsService) {

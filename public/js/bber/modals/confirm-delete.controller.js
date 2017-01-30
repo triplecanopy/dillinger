@@ -4,39 +4,50 @@
 module.exports =
   angular
   .module('bBer.modals.delete', ['bBer.books', 'diBase.factories'])
-  .controller('ConfirmDelete', function($scope, $modalInstance, $rootScope, $timeout, booksService, focus) {
+  .controller('ConfirmDelete', function($scope, $modalInstance, $rootScope, $timeout, booksService, documentsService, focus) {
 
-  var item = $scope.item;
+    var item = $scope.item;
+    var type = item.type;
 
-  $scope.ok = function() {
-    // The version of angular bootstrap we are using
-    // dosen't have the closed promise.
-    // I could update angular bootstrap but I don't think
-    // it's worth potentially introducing regression
-    // for a small delete dialog.
+    $scope.ok = function() {
+      $timeout(function() {
+        switch (type) {
+          case 'image':
+          case 'font':
+          case 'audio':
+          case 'video':
+            booksService.removeAsset(item);
+            $rootScope.deleteAsset(item);
+            break;
+          case 'md':
+            booksService.removeItem(item);
+            var next = booksService.getItemByIndex(0);
+            booksService.setCurrentDocument(next);
+            $rootScope.$emit('document.refresh');
+            $rootScope.deleteAsset(item);
+            break;
+          default:
+            console.log('Unknown type, not deleting.');
+            break;
+        }
+
+        // delete book
+        // booksService.removeItem(item);
+        // var next = booksService.getItemByIndex(0);
+        // booksService.setCurrentBook(next);
+        // $rootScope.$emit('book.refresh');
+
+      }, 500);
+
+      return $modalInstance.close();
+    };
+
+    $scope.cancel = function() {
+      return $modalInstance.dismiss('cancel');
+    };
+
     $timeout(function() {
-      // WARNING: At this point the $scope was destried
-      // by a previous call to $modalInstance.close().
-      // Once again this could be avoided if we had
-      // an up-to-date version of angular bootstrap.
-      booksService.removeItem(item);
-      var next = booksService.getItemByIndex(0);
-      booksService.setCurrentBook(next);
-      $rootScope.$emit('book.refresh');
-    }, 500);
-
-    return $modalInstance.close();
-  };
-
-  $scope.cancel = function() {
-    return $modalInstance.dismiss('cancel');
-  };
-
-  // Set focus on the YES button to allow the user to
-  // press enter or space to confirm deleting and to
-  // visually highlight the YES button.
-  $timeout(function() {
-    focus('deleteModalYes');
-  }, 100);
+      focus('deleteModalYes');
+    }, 100);
 
 });

@@ -8,7 +8,7 @@ module.exports =
     'diDocuments.controllers',
     'ui.sortable'
   ])
-  .controller('BookDocuments', function($scope, $timeout, $rootScope, $modal, userService, booksService, debounce) {
+  .controller('BookDocuments', function($scope, $timeout, $rootScope, $modal, userService, booksService) {
 
     // var vm = this;
     //
@@ -54,24 +54,27 @@ module.exports =
     function removeDocument(item) {
       var modalScope = $rootScope.$new();
       modalScope.item = item;
-      modalScope.wordCount = wordsCountService.count();
+      // modalScope.wordCount = wordsCountService.count();
 
       $modal.open({
-        template: require('raw!../documents/delete-modal.directive.html'),
+        template: require('raw!./modals/confirm-delete.modal.html'),
         scope: modalScope,
-        controller: 'DeleteDialog',
+        controller: 'ConfirmDelete',
         windowClass: 'modal--dillinger'
       });
     }
 
-    function createDocument() {
+    function createDocument(props) {
+      var settings = angular.extend({}, props);
       var book = booksService.getCurrentBook();
-      var item = book.createItem();
+      var item = book.createItem(settings);
       book.addItem(item);
       book.setCurrentDocument(item);
       return $rootScope.$emit('document.refresh');
     }
 
-    // initDocument();
+    $rootScope.$on('document.insert', function(e, data) {
+      createDocument(data);
+    });
 
 });

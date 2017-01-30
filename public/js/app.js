@@ -29,6 +29,7 @@
   require('./components/toggle-preview.directive');
   require('./components/switch.directive');
   require('./components/preview.directive');
+  require('./components/input-onchange.directive');
   require('./components/focus.factory');
 
   require('./components/wtfisdillinger-modal.controller');
@@ -52,12 +53,16 @@
   require('./bber/books.service');
   require('./bber/books.controller');
   require('./bber/book-documents.controller');
+  require('./bber/book-assets.controller');
   require('./bber/modals/confirm-delete.controller');
   require('./bber/modals/book-metadata.controller');
   require('./bber/modals/server-response.controller');
   require('./bber/sheet.factory');
   require('./bber/dropbox.service');
   require('./bber/localstore.service');
+
+  require('./bber/import-file.controller');
+  require('./bber/drop-target.directive');
 
 
   // Plugin: Github
@@ -93,9 +98,9 @@
   require('./zen-mode/zen-mode-toggle.directive');
 
   // File import.
-  require('./file-import/drop-target.directive');
-  require('./file-import/choose-file.directive');
-  require('./file-import/import-file.controller');
+  // require('./file-import/drop-target.directive');
+  // require('./file-import/choose-file.directive');
+  // require('./file-import/import-file.controller');
 
   // Configure Dependencies
   angular.module('Dillinger', [

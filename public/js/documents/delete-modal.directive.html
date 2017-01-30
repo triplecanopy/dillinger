@@ -5,10 +5,10 @@
   <h3>Are you sure you want to delete this document?</h3>
 </div>
 <div class="modal-body">
-  <div>{{item.title}}</div>
+  <div>Title: {{item.title}}</div>
   <div>Word count: {{wordCount}}</div>
 </div>
 <div class="modal-footer">
-  <button type="button" id='deleteModalYes' class="btn btn--delete-modal" ng-click="ok()">Yes</button>
   <button type="button" class="btn btn--delete-modal" ng-click="cancel()">Cancel</button>
+  <button type="button" id='deleteModalYes' class="btn btn--delete-modal" ng-click="ok()">Yes</button>
 </div>

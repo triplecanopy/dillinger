@@ -138,6 +138,7 @@ module.exports =
    *                            to work.
    */
   function setCurrentDocument(item) {
+    console.log('setting')
     service.currentDocument = item;
     return item;
   }
@@ -226,7 +227,7 @@ module.exports =
   }
 
   /**
-   *    Import a md file into dillinger. 
+   *    Import a md file into dillinger.
    *
    *    @param  {File}  file  The file to import
    *            (see: https://developer.mozilla.org/en/docs/Web/API/File).
@@ -246,7 +247,7 @@ module.exports =
           duration: 4000
         })
       }
-        
+
       // Create a new document.
       var item = createItem();
       addItem(item);
@@ -262,7 +263,7 @@ module.exports =
       }
 
     reader.readAsText(file);
-  } 
+  }
   /**
    *    Generic file import method. Checks for images and markdown.
    *
@@ -274,7 +275,7 @@ module.exports =
    */
 
   function importFile(file, showTip) {
-      
+
     if (!file) {
       return;
     }
@@ -368,11 +369,11 @@ function imageUploader(file) {
           duration: 5000
         });
       } else {
-        var public_url = result.data.url 
+        var public_url = result.data.url
         // Now take public_url and and wrap in markdown
         var template = '!['+name+']('+public_url+')'
         // Now take the ace editor cursor and make the current
-        // value the template        
+        // value the template
         service.setCurrentCursorValue(template)
 
         // Track event in GA

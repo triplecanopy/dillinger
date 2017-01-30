@@ -1,3 +1,6 @@
+
+/* global angular */
+
 'use strict';
 
 module.exports = angular.module('bBer.localstore', ['bBer.book'])
@@ -6,16 +9,18 @@ module.exports = angular.module('bBer.localstore', ['bBer.book'])
     return {
       listBooks: listBooks,
       loadBook: loadBook,
+      loadAssets: loadAssets,
+      deleteAsset: deleteAsset,
       saveBook: saveBook,
       bberCommand: bberCommand
-    }
+    };
 
     function listBooks() {}
 
     function saveBook(book) {
       return $http.post('/bber/book', book).then(function (resp) {
         console.log(resp);
-      })
+      });
     }
 
     function loadBook() {
@@ -28,9 +33,25 @@ module.exports = angular.module('bBer.localstore', ['bBer.book'])
           return new BookSheet(f);
         });
         var n = new Book(resp.data);
-        console.log(n);
-        return n
-      })
+        return n;
+      });
+    }
+
+    function loadAssets() {
+      return $http.get('/bber/assets').then(function (resp) {
+        return resp.data;
+      });
+    }
+
+    function deleteAsset(item) {
+      return $http({
+        method: 'DELETE',
+        url: '/bber/assets',
+        data: item,
+        headers: { 'Content-Type': 'application/json;charset=utf-8' }
+      }).then(function(resp) {
+        return resp;
+      });
     }
 
     function bberCommand(cmd) {

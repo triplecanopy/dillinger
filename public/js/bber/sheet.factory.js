@@ -1,4 +1,6 @@
 
+/* global angular */
+
 'use strict';
 
 module.exports =
@@ -6,15 +8,15 @@ module.exports =
   .module('bBer.sheet', [])
   .factory('BookSheet', function() {
 
-  return function(sheetData) {
+    return function(sheetData) {
+      angular.extend(this, {
+        id: new Date().getTime() + Math.random(1000),
+        title: 'section.md',
+        body: '',
+        type: 'md'
+      });
 
-    angular.extend(this, {
-      id: new Date().getTime()+Math.random(1000) ,
-      title: 'section.md',
-      body: ''
-    });
-
-    return angular.extend(this, sheetData);
-  };
+      return angular.extend(this, sheetData);
+    };
 
 });

@@ -13,6 +13,7 @@ module.exports =
   var service = {
     currentBook: {},
     books:       [],
+    assets:      [],
 
     getItem:                 getItem,
     getItemByIndex:          getItemByIndex,
@@ -22,6 +23,10 @@ module.exports =
     createItem:              createItem,
     size:                    size,
     getItems:                getItems,
+    getAssets:               getAssets,
+    addAsset:                addAsset,
+    addAssets:               addAssets,
+    removeAsset:             removeAsset,
     removeItems:             removeItems,
     importFile:              importFile,
     setCurrentBook:          setCurrentBook,
@@ -33,6 +38,8 @@ module.exports =
     setCurrentBookSHA:       setCurrentBookSHA,
     getCurrentBookSHA:       getCurrentBookSHA,
     setCurrentCursorValue:   setCurrentCursorValue,
+    setCurrentDocument:      setCurrentDocument,
+    getCurrentDocument:      getCurrentDocument,
     save:                    save,
   };
 
@@ -55,7 +62,7 @@ module.exports =
    *    @param  {Integer}  index  The index number.
    */
   function getItemByIndex(index) {
-    return service.books[index];
+    return service.currentBook.files[index];
   }
 
   /**
@@ -92,7 +99,16 @@ module.exports =
    *    @param  {Object}  item  The item to remove.
    */
   function removeItem(item) {
-    return service.books.splice(service.books.indexOf(item), 1);
+    return service.currentBook.files.splice(service.currentBook.files.indexOf(item), 1);
+  }
+
+  /**
+   *    Remove item from the assets array.
+   *
+   *    @param  {Object}  item  The item to remove.
+   */
+  function removeAsset(item) {
+    return service.assets.splice(service.assets.indexOf(item), 1);
   }
 
   /**
@@ -119,10 +135,33 @@ module.exports =
   }
 
   /**
-   *    Remove all items frm the files array.
+   *    Get all assets.
+   */
+  function getAssets() {
+    return service.assets;
+  }
+
+  /**
+   *    Create asset list.
+   */
+  function addAssets(data) {
+    service.assets = data;
+    return service.assets;
+  }
+
+  /**
+   *    Add an asset.
+   */
+  function addAsset(item) {
+    return service.assets.push(item);
+  }
+
+  /**
+   *    Remove all items from the files array.
    */
   function removeItems() {
     service.books = [];
+    service.assets = [];
     service.currentBook = {};
     return false;
   }
@@ -137,6 +176,21 @@ module.exports =
   function setCurrentBook(item) {
     service.currentBook = item;
     return item;
+  }
+
+  /**
+   *    Update the current document.
+   */
+  function setCurrentDocument(item) {
+    service.currentBook.currentDocument = item;
+    return item;
+  }
+
+  /**
+   *    Retrieve the current document.
+   */
+  function getCurrentDocument() {
+    return service.currentBook.currentDocument;
   }
 
   /**
@@ -222,44 +276,7 @@ module.exports =
     return false;
   }
 
-  /**
-   *    Import a md file into dillinger.
-   *
-   *    @param  {File}  file  The file to import
-   *            (see: https://developer.mozilla.org/en/docs/Web/API/File).
-   *
-   */
-  function mdFileReader(file){
 
-    var reader = new FileReader()
-
-    reader.onload = function(event) {
-
-      var text = event.target.result
-
-      if (isBinaryFile(text)) {
-        return diNotify({
-          message: 'Importing binary files will cause dillinger to become unresponsive',
-          duration: 4000
-        })
-      }
-
-      // Create a new document.
-      var item = createItem();
-      addItem(item);
-      setCurrentBook(item);
-
-      // Set the new documents title and body.
-      setCurrentBookTitle(file.name);
-      setCurrentBookBody(text);
-
-      // Refresh the editor and proview.
-      $rootScope.$emit('document.refresh');
-
-      }
-
-    reader.readAsText(file);
-  }
   /**
    *    Generic file import method. Checks for images and markdown.
    *
@@ -270,65 +287,24 @@ module.exports =
    *                      about dragging and dropping files.
    */
 
-  function importFile(file, showTip) {
+  function importFile(file) {
+    if (!file) { return; }
 
-    if (!file) {
-      return;
-    }
+    var reader = new FileReader(),
+      mimetype = file.type;
 
-    var reader = new FileReader();
+    reader.onload = function(e) {
+      var text = e.target.result;
 
-    // If it is text or image or something else
-    reader.onloadend = function(event) {
-
-      var data = event.target.result
-        , firstFourBitsArray = (new Uint8Array(data)).subarray(0, 4)
-        , type = ''
-        , header = ''
-        ;
-
-      // Snag hex value
-      for(var i = 0; i < firstFourBitsArray.length; i++) {
-         header += firstFourBitsArray[i].toString(16);
+      if (mimetype === 'text/markdown' && !isBinaryFile(text)) { // update MD view with new document
+        var data = { body: text };
+        $rootScope.$emit('document.insert', data);
       }
 
-      // Determine image type or unknown
-      switch (header) {
-        case "89504e47":
-          type = "image/png";
-          break;
-        case "47494638":
-          type = "image/gif";
-          break;
-        case "ffd8ffe0":
-        case "ffd8ffe1":
-        case "ffd8ffe2":
-          type = "image/jpeg";
-          break;
-        default:
-          type = "unknown";
-          break;
-      }
+      fileUploader(file);
+    };
 
-      if (showTip) {
-        diNotify({ message: 'You can also drag and drop files into dillinger' });
-      }
-
-      if(type === 'unknown') {
-        return mdFileReader(file)
-      }
-      else{
-        // Do the upload of the image to cloud service
-        // and return an URL of the image
-        return imageUploader(file)
-      }
-
-    }
-
-    // Read as array buffer so we can determine if image
-    // from the bits
-    reader.readAsArrayBuffer(file)
-
+    reader.readAsText(file);
   }
 
   /**
@@ -338,56 +314,71 @@ module.exports =
    *            (see: https://developer.mozilla.org/en/docs/Web/API/File).
    *
    */
-  function imageUploader(file) {
-
-    var reader = new FileReader()
-      , name = file.name
-      ;
+  function fileUploader(file) {
+    var reader = new FileReader(),
+      name = file.name,
+      size = file.size,
+      type = file.type.substring(0, file.type.indexOf('/')),
+      mimetype = file.type;
 
     reader.onloadend = function() {
-
-      var di = diNotify({
-        message: 'Uploading Image to Dropbox...',
-        duration: 5000
-      });
-      return $http.post('save/dropbox/image', {
-        image_name: name,
-        fileContents: reader.result
-      }).success(function(result) {
-
-        if (angular.isDefined(di.$scope)) {
-          di.$scope.$close();
-        }
-        if (result.data.error) {
-          return diNotify({
-            message: 'An Error occured: ' + result.data.error,
-            duration: 5000
-          });
-        } else {
-          var public_url = result.data.url
-          // Now take public_url and and wrap in markdown
-          var template = '!['+name+']('+public_url+')'
-          // Now take the ace editor cursor and make the current
-          // value the template
-          service.setCurrentCursorValue(template)
-
-          // Track event in GA
-          // if (window.ga) {
-          //   ga('send', 'event', 'click', 'Upload Image To Dropbox', 'Upload To...')
-          // }
-          return diNotify({
-            message: 'Successfully uploaded image to Dropbox.',
-            duration: 4000
-          });
-        }
-      }).error(function(err) {
+      return $http.post('/bber/assets', {
+        name: name,
+        size: size,
+        type: type,
+        mimetype: mimetype,
+        content: reader.result
+      }).then(function successCallback(resp) {
+        addAsset(resp.data);
+      }, function errorCallback(err) {
         return diNotify({
-          message: 'An Error occured: ' + err
+          message: 'An Error occured: ' + err.message
         });
       });
 
-    }
-    reader.readAsDataURL(file)
+      // var di = diNotify({
+      //   message: 'Uploading Image to Dropbox...',
+      //   duration: 5000
+      // });
+      // return $http.post('save/dropbox/image', {
+      //   image_name: name,
+      //   fileContents: reader.result
+      // }).success(function(result) {
+
+      //   if (angular.isDefined(di.$scope)) {
+      //     di.$scope.$close();
+      //   }
+      //   if (result.data.error) {
+      //     return diNotify({
+      //       message: 'An Error occured: ' + result.data.error,
+      //       duration: 5000
+      //     });
+      //   } else {
+      //     var public_url = result.data.url;
+      //     // Now take public_url and and wrap in markdown
+      //     var template = '!['+name+']('+public_url+')';
+      //     // Now take the ace editor cursor and make the current
+      //     // value the template
+      //     service.setCurrentCursorValue(template);
+
+      //     // Track event in GA
+      //     // if (window.ga) {
+      //     //   ga('send', 'event', 'click', 'Upload Image To Dropbox', 'Upload To...')
+      //     // }
+      //     return diNotify({
+      //       message: 'Successfully uploaded image to Dropbox.',
+      //       duration: 4000
+      //     });
+      //   }
+      // }).error(function(err) {
+      //   return diNotify({
+      //     message: 'An Error occured: ' + err
+      //   });
+      // });
+
+    };
+
+    reader.readAsBinaryString(file);
   }
 
   /**

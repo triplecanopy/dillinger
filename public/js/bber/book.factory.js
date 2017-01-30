@@ -36,13 +36,12 @@ module.exports = angular
       getCurrentDocumentSHA:   getCurrentDocumentSHA,
       setCurrentCursorValue:   setCurrentCursorValue,
       asBberFiles:             asBberFiles
-    }
+    };
 
     //initialize with a single document
     angular.extend(this, defaults);
     this.addItem( this.createItem() );
     angular.extend(this, bookData);
-
 
     /**
      *    Get item from the files array.
@@ -105,10 +104,9 @@ module.exports = angular
      *    @param  {Object}  props  Item properties (`title`, `body`, `id`).
      */
     function createItem(props) {
-      var pad = _.padStart(String(this.size()+1), 4,'0');
-      var title = {title: `section-${pad}.md`};
-      angular.extend
-      return new BookSheet(angular.extend({},props,title));
+      var pad = _.padStart(String(this.size() + 1), 4, '0');
+      var title = { title: 'section-' + pad + '.md' };
+      return new BookSheet(angular.extend({}, props, title));
     }
 
     /**
@@ -126,7 +124,14 @@ module.exports = angular
     }
 
     /**
-     *    Remove all items frm the files array.
+     *    Get all assets.
+     */
+    function getAssets() {
+      return this.assets;
+    }
+
+    /**
+     *    Remove all items from the files array.
      */
     function removeItems() {
       this.files = [];
@@ -231,7 +236,6 @@ module.exports = angular
       return false;
     }
 
-
     /**
      *    Update the current document SHA.
      *
@@ -275,7 +279,7 @@ module.exports = angular
 
       angular.forEach(this.files, function(f){
         _files.push({
-          path: '_book/_markdown/'+f.title,
+          path: '_book/_markdown/' + f.title,
           contents: f.body
         })
       })

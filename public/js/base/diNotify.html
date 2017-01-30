@@ -16,5 +16,9 @@
       </svg>
     </span>
     <p class="diNotify-message" ng-bind="$message"></p>
+    <div class="diNotify--confirm" ng-show="$confirm">
+      <button ng-click="$choice(false)" type="button" class="btn btn--muted">Cancel</button>
+      <button ng-click="$choice(true)" type="button" class="btn">Confirm</button>
+    </div>
   </div>
 </div>
