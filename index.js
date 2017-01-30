@@ -77,13 +77,21 @@ module.exports = (function(){
   }
 
   wss.on('connection', function connection(ws) {
-    var resp = {};
+    var resp = {
+      action: 'post',
+      permissions: {
+        access: 1,
+        status: 1
+      }
+    };
     if (wss.clients.length === 1) {
-      resp = { action: 'post', permissions: 1 };
+      resp.permissions.access = 1;
+      resp.permissions.status = 1;
       wss.clients[0].send(JSON.stringify(resp))
     } else {
       wss.clients.forEach(function each(client) {
-        resp = { action: 'post', permissions: 0 };
+        resp.permissions.access = 0;
+        resp.permissions.status = 1;
         if (client === ws) {
           ws.send(JSON.stringify(resp))
         }

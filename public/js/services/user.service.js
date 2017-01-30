@@ -3,21 +3,23 @@
 module.exports =
   angular
   .module('diUser.service', [])
-  .factory('userService', function($rootScope) {
+  .factory('userService', function($rootScope, $document) {
 
   var
     defaults = {
 
-      // _id, _permissions, and _status are used by websockets to allow/disallow
+      // id, access, and_status are used by websockets to allow/disallow
       // document editing.
-      // _permissions: 0 -> can view
-      // _permissions: 1 -> can edit
-      // _status: 0 -> passive (hasn't interacted with the document in 5mn)
-      // _status: 1 -> active (has interacted with the document in the last 5mn)
+      // access: 0 -> can view
+      // access: 1 -> can edit
+      //_status: 0 -> passive (hasn't interacted with the document in 5mn)
+      //_status: 1 -> active (has interacted with the document in the last 5mn)
 
-      _id: Math.round(new Date().getTime() + Math.random(1000)),
-      _status: 0,
-      _permissions: 0,
+      id: Math.round(new Date().getTime() + Math.random(1000)),
+      permissions: {
+        access: 0,
+        status: 0,
+      },
       enableAutoSave: true,
       enableWordsCount: true,
       enableScrollSync: false,
@@ -46,11 +48,8 @@ module.exports =
     return service.profile;
   }
 
-  function update(permissions, status) {
-    service.profile = angular.extend({}, service.profile, {
-      permissions: permissions,
-      status: status
-    })
+  function update(permissions) {
+    service.profile.permissions = angular.extend({}, service.profile.permissions, permissions);
     $rootScope.$emit('user.refresh');
     return service.profile;
   }

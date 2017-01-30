@@ -2,14 +2,18 @@
 'use strict';
 module.exports =
   angular
-  .module('websockets.service', [])
-  .factory('websocketsService', function ($timeout, $interval, $window, $document, userService, booksService, $modal, $rootScope) {
+  .module('websockets.service', [
+    'bBer.modals.logout'
+  ])
+  .factory('websocketsService', function ($timeout, $interval, $window, $document, userService, booksService, $modal, $rootScope, diNotify) {
+
+    var defaults = { access: 0, status: 0 };
 
     var service = {
       init: init,
-      post: add,
-      patch: update,
-      delete: remove
+      post: _post,
+      patch: _patch,
+      delete: _delete
     };
 
     function init(user) {
@@ -26,52 +30,74 @@ module.exports =
         ws.send('User left');
         ws.close()
       };
-
       setInactivityTimer();
     }
 
-    function add(permissions) {
+
+    function _post(permissions) {
       booksService.setCurrentUser(userService.profile);
-      userService.update(permissions, 1);
+      userService.update(permissions);
     }
 
-    function update(permissions, status) {
+    function _patch(options) {
+      var permissions = angular.extend({}, defaults, options);
       booksService.setCurrentUser(userService.profile);
-      userService.update(permissions, status);
+      userService.update(permissions);
     }
 
-    function remove(permissions) {}
+    function _delete(user) {}
 
     function setInactivityTimer() {
-      var activityTimer = null
-      var activityDebounce = null
-      var activityCallback = function() {
-        $timeout.cancel(activityDebounce)
-        activityDebounce = $timeout(function() {
-          checkActivity();
-        }, 1);
+      var activityTimer = null;
+      var activityDebounce = null;
+      var debounceSpeed = 1000;
+      // var maxTimeInactive = 1000;
+      // var maxTimeModal = 1000;
+      var maxTimeInactive = 1000 * 60 * 5; // time before modal appears
+      var maxTimeModal = 1000 * 60; // time before automatically logging user out
+
+      var modalScope = $rootScope.$new();
+
+      modalScope.onConfirm = function() {
+        service.patch({ access: 0, status: 0 });
+        diNotify({
+          message: 'You have been logged out. Refresh the page to continue editing.',
+          duration: 0
+        });
       };
+      modalScope.onReject = setTimer;
+      modalScope.timer = maxTimeModal;
+
+      // Check to see if there's been any movement on the page
       function checkActivity() {
-        console.log('setting ...')
+        $timeout.cancel(activityDebounce);
+        activityDebounce = $timeout(function() {
+          console.log('user active');
+          notifyInactiveUser();
+        }, debounceSpeed);
+      };
+
+      // The user is inactive, ask them if they want to logout.  After a
+      // minute they're logged out automatically.
+      function notifyInactiveUser() {
+        console.log('is inactive ...')
         $timeout.cancel(activityTimer);
         activityTimer = $timeout(function() {
-          var modalScope = $rootScope.$new();
-          modalScope.onConfirm = function() { service.patch(0, 0); };
-          modalScope.onReject = setTimer;
-          $document.off('mousemove keydown', activityCallback);
+          console.log('max time reached')
+          $document.off('mousemove keydown', checkActivity);
           $modal.open({
             template: require('raw!./modals/confirm-logout.modal.html'),
             scope: modalScope,
             controller: 'ConfirmLogout',
             windowClass: 'modal--dillinger'
           });
-        }, 200);
+        }, maxTimeInactive);
       }
 
       function setTimer() {
-        $document.on('mousemove keydown', activityCallback);
+        $document.on('mousemove keydown', checkActivity);
         $document.trigger('mousemove');
-      }
+      };
 
       setTimer();
     }

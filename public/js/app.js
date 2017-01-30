@@ -47,7 +47,7 @@
   require('./documents/delete-modal.controller');
   require('./services/wordscount.service');
 
-  //BBer Stuff
+  // BBer Stuff
   require('./bber/base.controller');
   require('./bber/book.factory');
   require('./bber/books.service');
@@ -63,6 +63,7 @@
   require('./bber/localstore.service');
   require('./bber/import-file.controller');
   require('./bber/drop-target.directive');
+  require('./bber/block-ui.directive');
   require('./bber/websockets.service');
 
   // Plugin: Github

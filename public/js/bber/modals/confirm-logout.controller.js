@@ -3,7 +3,7 @@
 
 module.exports =
   angular
-  .module('bBer.modals.delete', ['bBer.books', 'diBase.factories'])
+  .module('bBer.modals.logout', ['bBer.books', 'diBase.factories'])
   .controller('ConfirmLogout', function($scope, $modalInstance, $rootScope, $timeout, booksService, documentsService, focus) {
 
     $scope.ok = function() {
@@ -25,6 +25,6 @@ module.exports =
 
     $timeout(function() {
       $scope.ok();
-    }, 10000);
+    }, $scope.timer);
 
 });

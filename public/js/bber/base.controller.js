@@ -19,6 +19,7 @@ module.exports =
     'diBase.directives.previewToggle',
     'diBase.directives.inputOnchange',
     'diBase.directives.preview',
+    'bBer.directives.blockUI',
     'bBer.controllers.books',
     'bBer.controllers.bookDocuments',
     'bBer.controllers.bookAssets',
@@ -66,7 +67,7 @@ module.exports =
 
   var updateUser = function() {
     $rootScope.currentUser = booksService.getCurrentUser();
-    console.log($rootScope.currentUser)
+    $rootScope.blockUI = $rootScope.currentUser.permissions.access !== 1;
     return $rootScope.currentUser;
   };
 
@@ -95,6 +96,7 @@ module.exports =
     var book = new Book();
     booksService.addItem(book);
     booksService.setCurrentBook(book);
+    websocketsService.init($scope.profile);
     return $rootScope.$emit('books.refresh');
   });
 
@@ -102,6 +104,8 @@ module.exports =
   Local.loadAssets().then(function(data) {
     booksService.addAssets(data);
     return $rootScope.$emit('assets.refresh');
+  }, function(err) {
+    console.log('Error loading assets: ' + err.message);
   });
 
 });
