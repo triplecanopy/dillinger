@@ -55,15 +55,15 @@
   require('./bber/book-documents.controller');
   require('./bber/book-assets.controller');
   require('./bber/modals/confirm-delete.controller');
+  require('./bber/modals/confirm-logout.controller');
   require('./bber/modals/book-metadata.controller');
   require('./bber/modals/server-response.controller');
   require('./bber/sheet.factory');
   require('./bber/dropbox.service');
   require('./bber/localstore.service');
-
   require('./bber/import-file.controller');
   require('./bber/drop-target.directive');
-
+  require('./bber/websockets.service');
 
   // Plugin: Github
   require('./plugins/github/github.service');

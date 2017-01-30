@@ -5,9 +5,10 @@ module.exports =
   angular
   .module('diUser', [
     'diUser.service',
-    'diDocuments.service.wordcount'
+    'diDocuments.service.wordcount',
+    'websockets.service'
   ])
-  .controller('User', function($rootScope, $timeout, $modal, userService, wordsCountService) {
+  .controller('User', function($rootScope, $timeout, $modal, userService, wordsCountService, websocketsService) {
 
   var vm = this;
 
@@ -24,7 +25,7 @@ module.exports =
     // See #516 for details.
     if ($this.is($allowed)) {
       var
-        other     = $divs.not(this)[0],
+        other      = $divs.not(this)[0],
         percentage = this.scrollTop / (this.scrollHeight - this.offsetHeight);
 
       other.scrollTop = Math.round(percentage * (other.scrollHeight - other.offsetHeight));

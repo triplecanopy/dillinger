@@ -77,10 +77,15 @@ module.exports = (function(){
   }
 
   wss.on('connection', function connection(ws) {
-    if (wss.clients.length > 1) {
+    var resp = {};
+    if (wss.clients.length === 1) {
+      resp = { action: 'post', permissions: 1 };
+      wss.clients[0].send(JSON.stringify(resp))
+    } else {
       wss.clients.forEach(function each(client) {
+        resp = { action: 'post', permissions: 0 };
         if (client === ws) {
-          ws.send('This document is already being edited.')
+          ws.send(JSON.stringify(resp))
         }
       })
     }
@@ -91,7 +96,9 @@ module.exports = (function(){
 
     ws.on('message', function message(data) {
       wss.clients.forEach(function each(client) {
-        if (client !== ws) { client.send(data) }
+        if (client !== ws) {
+          client.send(data)
+        }
       })
     })
   })

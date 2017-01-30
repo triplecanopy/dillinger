@@ -12,6 +12,7 @@ module.exports =
 
   var service = {
     currentBook: {},
+    currentUser: {},
     books:       [],
     assets:      [],
 
@@ -40,6 +41,8 @@ module.exports =
     setCurrentCursorValue:   setCurrentCursorValue,
     setCurrentDocument:      setCurrentDocument,
     getCurrentDocument:      getCurrentDocument,
+    getCurrentUser:          getCurrentUser,
+    setCurrentUser:          setCurrentUser,
     save:                    save,
   };
 
@@ -411,6 +414,13 @@ module.exports =
     // return localStorage.setItem('currentBook', angular.toJson(service.currentBook));
   }
 
+  function getCurrentUser() {
+    return service.currentBook.currentUser;
+  }
 
+  function setCurrentUser(user) {
+    service.currentBook.currentUser = user;
+    return service.currentBook.currentUser;
+  }
 
 });

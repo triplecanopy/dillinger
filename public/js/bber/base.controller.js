@@ -24,8 +24,9 @@ module.exports =
     'bBer.controllers.bookAssets',
     'bBer.dropbox',
     'bBer.localstore',
+    'websockets.service',
   ])
-.controller('Base', function($scope, $rootScope, userService, booksService, Local, Book) {
+.controller('Base', function($scope, $rootScope, userService, booksService, Local, Book, websocketsService) {
   $scope.profile  = userService.profile;
   $rootScope.editor = ace.edit('editor');
   $rootScope.save = Local.saveBook;
@@ -63,15 +64,23 @@ module.exports =
     return $rootScope.assets;
   };
 
+  var updateUser = function() {
+    $rootScope.currentUser = booksService.getCurrentUser();
+    console.log($rootScope.currentUser)
+    return $rootScope.currentUser;
+  };
+
   $scope.updateBooks = updateBooks;
   $scope.updateBook = updateBook;
   $scope.updateDocument = updateDocument;
   $scope.updateAssets = updateAssets;
+  $scope.updateUser = updateUser;
 
   $rootScope.$on('books.refresh', updateBooks);
   $rootScope.$on('book.refresh', updateBook);
   $rootScope.$on('document.refresh', updateDocument);
   $rootScope.$on('assets.refresh', updateAssets);
+  $rootScope.$on('user.refresh', updateUser);
 
 
   // initialize a book
@@ -79,6 +88,7 @@ module.exports =
     // try to load from local server
     booksService.addItem(book);
     booksService.setCurrentBook(book);
+    websocketsService.init($scope.profile);
     return $rootScope.$emit('books.refresh');
   }, function(err) {
     // otherwise create a blank one

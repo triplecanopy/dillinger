@@ -5,7 +5,7 @@ require('lodash');
 
 module.exports = angular
 .module('bBer.book',  ['bBer.sheet'])
-.factory('Book', function(BookSheet, diNotify) {
+.factory('Book', function(BookSheet) {
 
   return function(bookData) {
 
