@@ -37,6 +37,7 @@ module.exports =
 
 
     function save(manuel) {
+      if ($rootScope.blockUI) { return; }
       var book = booksService.getCurrentBook();
       var item = book.getCurrentDocument();
       item.body = $rootScope.editor.getSession().getValue();
@@ -52,6 +53,7 @@ module.exports =
     }
 
     function removeDocument(item) {
+      if ($rootScope.blockUI) { return; }
       var modalScope = $rootScope.$new();
       modalScope.item = item;
       // modalScope.wordCount = wordsCountService.count();
@@ -65,6 +67,7 @@ module.exports =
     }
 
     function createDocument(props) {
+      if ($rootScope.blockUI) { return; }
       var settings = angular.extend({}, props);
       var book = booksService.getCurrentBook();
       var item = book.createItem(settings);

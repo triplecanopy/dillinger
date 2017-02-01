@@ -4,16 +4,18 @@
 module.exports =
   angular
   .module('diFileImport.directives.dnd', [])
-  .directive('fileImportDropTarget', function(booksService) {
+  .directive('fileImportDropTarget', function($rootScope, booksService) {
 
     function createDropTarget(scope, elem) {
       elem.on({
         dragover: function(e) {
+          if ($rootScope.blockUI) { return; }
           elem.addClass('dragover');
           e.originalEvent.dataTransfer.dropEffect = 'copy';
           e.preventDefault();
         },
         drop: function(e) {
+          if ($rootScope.blockUI) { return; }
           elem.removeClass('dragover');
           e.preventDefault();
           var file = e.originalEvent.dataTransfer.files[0];

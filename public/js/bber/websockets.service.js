@@ -50,9 +50,11 @@ module.exports =
     function setInactivityTimer() {
       var activityTimer = null;
       var activityDebounce = null;
-      var debounceSpeed = 1000;
-      // var maxTimeInactive = 1000;
-      // var maxTimeModal = 1000;
+      var debounceSpeed = 500;
+
+      // var maxTimeInactive = 500;
+      // var maxTimeModal = 500;
+
       var maxTimeInactive = 1000 * 60 * 5; // time before modal appears
       var maxTimeModal = 1000 * 60; // time before automatically logging user out
 

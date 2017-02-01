@@ -63,7 +63,6 @@
   require('./bber/localstore.service');
   require('./bber/import-file.controller');
   require('./bber/drop-target.directive');
-  require('./bber/block-ui.directive');
   require('./bber/websockets.service');
 
   // Plugin: Github

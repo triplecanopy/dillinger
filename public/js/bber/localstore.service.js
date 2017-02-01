@@ -18,6 +18,7 @@ module.exports = angular.module('bBer.localstore', ['bBer.book'])
     function listBooks() {}
 
     function saveBook(book) {
+      if ($rootScope.blockUI) { return; }
       return $http.post('/bber/book', book).then(function (resp) {
         console.log(resp);
       });
@@ -55,6 +56,7 @@ module.exports = angular.module('bBer.localstore', ['bBer.book'])
     }
 
     function bberCommand(cmd) {
+      if ($rootScope.blockUI) { return; }
       return $http.post('/bber/command', { cmd: cmd }).then(function (resp) {
         $rootScope.$emit('server.response', resp);
         return resp;

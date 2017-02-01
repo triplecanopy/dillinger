@@ -19,7 +19,6 @@ module.exports =
     'diBase.directives.previewToggle',
     'diBase.directives.inputOnchange',
     'diBase.directives.preview',
-    'bBer.directives.blockUI',
     'bBer.controllers.books',
     'bBer.controllers.bookDocuments',
     'bBer.controllers.bookAssets',
@@ -68,6 +67,7 @@ module.exports =
   var updateUser = function() {
     $rootScope.currentUser = booksService.getCurrentUser();
     $rootScope.blockUI = $rootScope.currentUser.permissions.access !== 1;
+    $rootScope.editor.setReadOnly($rootScope.blockUI);
     return $rootScope.currentUser;
   };
 

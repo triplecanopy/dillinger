@@ -7,7 +7,6 @@ module.exports =
   angular
   .module('bBer.controllers.bookAssets', [
     'bBer.books',
-    'ui.sortable',
     'bBer.modals.delete'
   ])
   .controller('BookAssets', function($scope, $timeout, $rootScope, $modal, booksService) {
@@ -29,6 +28,7 @@ module.exports =
     }
 
     function removeAsset(item) {
+      if ($rootScope.blockUI) { return; }
       var modalScope = $rootScope.$new();
       modalScope.item = item;
       $modal.open({
@@ -49,6 +49,7 @@ module.exports =
     }
 
     function insertAsset(item) {
+      if ($rootScope.blockUI) { return; }
       var str = directiveString(item);
       if (str) { $rootScope.editor.insert(str); }
     }
