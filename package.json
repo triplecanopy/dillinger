@@ -72,6 +72,7 @@
     "markdown-it-checkbox": "^1.1.0",
     "markdown-it-deflist": "^1.0.0",
     "markdown-it-footnote": "^1.0.0",
+    "markdown-it-front-matter": "^0.1.2",
     "markdown-it-ins": "^1.0.0",
     "markdown-it-mark": "^1.0.0",
     "markdown-it-sub": "^1.0.0",
