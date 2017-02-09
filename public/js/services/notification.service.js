@@ -118,7 +118,7 @@ module.exports =
 
       this.$scope.$choice = function(yes) {
         this.$close();
-        if (yes) {
+        if (yes && typeof this.$confirm === 'function') {
           this.$confirm();
         }
       }

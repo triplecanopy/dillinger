@@ -1,7 +1,7 @@
 <div class="modal-header">
-  <h3>You will be logged out in one minute.</h3>
+  <h3>{{ message }}</h3>
 </div>
 <div class="modal-footer">
-  <button type="button" class="btn btn--delete-modal" ng-click="cancel()">Cancel</button>
-  <button type="button" id='deleteModalYes' class="btn btn--delete-modal" ng-click="ok()">Logout</button>
+  <button type="button" class="btn btn--delete-modal" ng-click="cancel()">{{ buttonCancel }}</button>
+  <button type="button" id='confirmModalYes' class="btn btn--delete-modal" ng-click="ok()">{{ buttonOk }}</button>
 </div>

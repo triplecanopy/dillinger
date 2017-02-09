@@ -18,7 +18,7 @@ module.exports =
       id: Math.round(new Date().getTime() + Math.random(1000)),
       permissions: {
         access: 0,
-        status: 0,
+        status: 0
       },
       enableAutoSave: true,
       enableWordsCount: true,

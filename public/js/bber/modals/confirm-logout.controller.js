@@ -20,11 +20,16 @@ module.exports =
     };
 
     $timeout(function() {
-      focus('deleteModalYes');
+      focus('confirmModalYes');
     }, 100);
 
-    $timeout(function() {
-      $scope.ok();
-    }, $scope.timer);
+    if ($scope.timer) {
+      $timeout(function() {
+        $scope.ok();
+      }, $scope.timer);
+    }
 
+    $scope.$on('modal.cancel', function() {
+      return $scope.cancel();
+    });
 });
