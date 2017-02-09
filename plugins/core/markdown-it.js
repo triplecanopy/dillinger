@@ -26,7 +26,10 @@ md
   .use(require('markdown-it-ins'))
   .use(require('markdown-it-abbr'))
   .use(require('markdown-it-checkbox'))
-  .use(mdImages.plugin, mdImages.name, mdImages.renderer(md));
+  .use(mdImages.plugin, mdImages.name, mdImages.renderer(md))
+  .use(require('markdown-it-front-matter'), function frontmatter(data) {
+    console.log(data);
+  });
 
 md.renderer.rules.table_open = function (tokens, idx, options, env, self) {
   var token = tokens[idx];
